@@ -57,6 +57,25 @@ ColumnLayout {
         }
     }
 
+    Rectangle {
+        id:                 windVelocityInstrument
+        height:             _outerRadius
+        radius:             _outerRadius / 2
+        Layout.fillWidth:   true
+        color:              qgcPal.window
+
+        DeadMouseArea { anchors.fill: parent }
+
+        QGCWindVelocityWidget {
+            id:                     windVelocity
+            width:                  parent.width
+            height:                 parent.height
+            vehicle:                globals.activeVehicle
+            anchors.verticalCenter: parent.verticalCenter
+        }
+
+    }
+
     TerrainProgress {
         Layout.fillWidth: true
     }

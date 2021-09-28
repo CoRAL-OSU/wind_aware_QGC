@@ -15,6 +15,7 @@ PhotoVideoControl           1.0 PhotoVideoControl.qml
 QGCArtificialHorizon        1.0 QGCArtificialHorizon.qml
 QGCAttitudeHUD              1.0 QGCAttitudeHUD.qml
 QGCAttitudeWidget           1.0 QGCAttitudeWidget.qml
+QGCWindVelocityWidget       1.0 QGCWindVelocityWidget.qml
 QGCCompassWidget            1.0 QGCCompassWidget.qml
 QGCPitchIndicator           1.0 QGCPitchIndicator.qml
 

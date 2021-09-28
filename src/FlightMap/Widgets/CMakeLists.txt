@@ -8,6 +8,7 @@ add_custom_target(FligthMapWidgetsQml
 		QGCArtificialHorizon.qml
 		QGCAttitudeHUD.qml
 		QGCAttitudeWidget.qml
+		QGCWindVelocityWidget.qml
 		QGCCompassWidget.qml
 		QGCInstrumentWidgetAlternate.qml
 		QGCInstrumentWidget.qml
