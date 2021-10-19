@@ -1,3 +1,11 @@
+# Wind-aware modifications
+
+* Added QGCWindVelocityWidget.qml, which displays basic wind information.
+* Added QGCWindCompassWidget.qml, which displays an arrow against a compass rose for quick heading information.
+* Modified WindFactGroup.cc to provide the z component of wind, rather than throwing it away.
+* Temporay modification to QGCCompassWidget.qml to show wind heading overlaid on vehicle heading.
+
+
 # QGroundControl Ground Control Station
 
 [![Releases](https://img.shields.io/github/release/mavlink/QGroundControl.svg)](https://github.com/mavlink/QGroundControl/releases)
