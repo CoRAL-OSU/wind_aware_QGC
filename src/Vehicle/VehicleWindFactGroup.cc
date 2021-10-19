@@ -78,6 +78,7 @@ void VehicleWindFactGroup::_handleWindCov(mavlink_message_t& message)
 
     float direction = qRadiansToDegrees(qAtan2(wind.wind_y, wind.wind_x));
     float speed = qSqrt(qPow(wind.wind_x, 2) + qPow(wind.wind_y, 2));
+    float vertSpeed = wind.wind_z;
 
     if (direction < 0) {
         direction += 360;
@@ -85,7 +86,7 @@ void VehicleWindFactGroup::_handleWindCov(mavlink_message_t& message)
 
     this->direction()->setRawValue(direction);
     this->speed()->setRawValue(speed);
-    verticalSpeed()->setRawValue(0);
+    this->verticalSpeed()->setRawValue(vertSpeed);
     _setTelemetryAvailable(true);
 }
 

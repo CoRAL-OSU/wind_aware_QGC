@@ -21,13 +21,18 @@ import QGroundControl               1.0
 import QGroundControl.Controls      1.0
 import QGroundControl.ScreenTools   1.0
 import QGroundControl.Palette       1.0
+import QGroundControl.Controllers   1.0
 
 Item {
     id: root
 
-    property var  vehicle:      null
-    property var windVelocity:  vehicle ? vehicle.wind.speed.rawValue : 0
-    //property var windVelocity: vehicle? vehicle.roll.rawValue : 0
+    property var  vehicle:            null
+    property real _windSpeed:         vehicle ? vehicle.wind.speed.rawValue : 0
+    property real _windHeading:       vehicle ? vehicle.wind.direction.rawValue: 0
+    property real _windHeadingRad:    (Math.PI / 180.0) * _windHeading
+    property real _windSpeedDown:     vehicle ? vehicle.wind.verticalSpeed.rawValue: 0
+    property real _windSpeedNorth:    vehicle ? _windSpeed * Math.cos(_windHeadingRad) : 0
+    property real _windSpeedEast:     vehicle ? _windSpeed * Math.sin(_windHeadingRad) : 0
 
     QGCPalette { id: qgcPal; colorGroupEnabled: enabled }
 
@@ -41,17 +46,44 @@ Item {
 
         QGCLabel {
             id: windVelocityNameLabel
-            anchors.horizontalCenter: parent.horizontalCenter
-            text: "Wind Velocity (m/s)"
+            anchors.left: parent.left
+            anchors.leftMargin: 20
+            text: "Wind Velocity"
             color: "white"
         }
 
         QGCLabel {
             id: windVelocityValueLabel
-            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.left: parent.left
+            anchors.leftMargin: 20
             anchors.top: windVelocityNameLabel.bottom
-            text: windVelocity
+            text: _windSpeedNorth.toFixed(2) + " N " + _windSpeedEast.toFixed(2) + " E " + _windSpeedDown.toFixed(2) + " D "
             color: "white"
+        }
+        QGCLabel {
+            id: windDirValueLabel
+            anchors.left: parent.left
+            anchors.leftMargin: 20
+            anchors.top: windVelocityValueLabel.bottom
+            text: _windSpeed.toFixed(2) + " m/s " + _windHeading.toFixed(2) + " deg"
+            color: "white"
+        }
+//        QGCLabel {
+//            id: windVertSpeedValueLabel
+//            anchors.left: parent.left
+//            anchors.leftMargin: 20
+//            anchors.top: windDirValueLabel.bottom
+//            text: _windHeadingRad + " (rad) "
+//            color: "white"
+//        }
+
+        QGCWindCompassWidget {
+            id: windCompass
+            vehicle: root.vehicle
+            height: root.height
+            width: windCompass.height
+            anchors.verticalCenter: parent.verticalCenter
+            anchors.right: parent.right
         }
     }
 }

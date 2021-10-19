@@ -196,5 +196,7 @@
         <file alias="Yield.svg">src/ui/toolbar/Images/Yield.svg</file>
         <file alias="ZoomMinus.svg">src/FlightMap/Images/ZoomMinus.svg</file>
         <file alias="ZoomPlus.svg">src/FlightMap/Images/ZoomPlus.svg</file>
+        <file alias="windInstrumentArrow.svg">src/FlightMap/Images/windInstrumentArrow.svg</file>
     </qresource>
+    <qresource prefix="/"/>
 </RCC>

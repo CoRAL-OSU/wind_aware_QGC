@@ -36,6 +36,7 @@ Item {
     property real _sizeRatio:           ScreenTools.isTinyScreen ? (size / _defaultSize) * 0.5 : size / _defaultSize
     property int  _fontSize:            ScreenTools.defaultFontPointSize * _sizeRatio
     property real _heading:             vehicle ? vehicle.heading.rawValue : 0
+    property real _windHeading:         vehicle ? vehicle.wind.direction.rawValue: 0
     property real _headingToHome:       vehicle ? vehicle.headingToHome.rawValue : 0
     property real _groundSpeed:         vehicle ? vehicle.groundSpeed.rawValue : 0
     property real _headingToNextWP:     vehicle ? vehicle.headingToNextWP.rawValue : 0
@@ -144,6 +145,22 @@ Item {
                 origin.x:       pointer.width  / 2
                 origin.y:       pointer.height / 2
                 angle:          isNoseUpLocked()?0:_heading
+            }
+        }
+
+        Image {
+            id:                 windPointer
+            width:              size * 0.65
+            source:             "/qmlimages/windInstrumentArrow.svg"
+            mipmap:             true
+            sourceSize.width:   width / 8
+            sourceSize.height:  height / 4
+            fillMode:           Image.PreserveAspectFit
+            anchors.centerIn:   parent
+            transform: Rotation {
+                origin.x:       windPointer.width / 2
+                origin.y:       windPointer.height / 2
+                angle:          _windHeading
             }
         }
 
