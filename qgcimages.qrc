@@ -197,6 +197,7 @@
         <file alias="ZoomMinus.svg">src/FlightMap/Images/ZoomMinus.svg</file>
         <file alias="ZoomPlus.svg">src/FlightMap/Images/ZoomPlus.svg</file>
         <file alias="windInstrumentArrow.svg">src/FlightMap/Images/windInstrumentArrow.svg</file>
+        <file alias="3d_axes.svg">src/FlightMap/Images/3d_axes.svg</file>
     </qresource>
     <qresource prefix="/"/>
 </RCC>

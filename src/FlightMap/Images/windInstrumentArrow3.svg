@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
-<svg version="1.2" width="7.62mm" height="50.8mm" viewBox="10779 2270 762 5080" preserveAspectRatio="xMidYMid" fill-rule="evenodd" stroke-width="28.222" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg" xmlns:ooo="http://xml.openoffice.org/svg/export" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:presentation="http://sun.com/xmlns/staroffice/presentation" xmlns:smil="http://www.w3.org/2001/SMIL20/" xmlns:anim="urn:oasis:names:tc:opendocument:xmlns:animation:1.0" xml:space="preserve">
+<svg version="1.2" width="4.21mm" height="25.81mm" viewBox="10950 9890 421 2581" preserveAspectRatio="xMidYMid" fill-rule="evenodd" stroke-width="28.222" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg" xmlns:ooo="http://xml.openoffice.org/svg/export" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:presentation="http://sun.com/xmlns/staroffice/presentation" xmlns:smil="http://www.w3.org/2001/SMIL20/" xmlns:anim="urn:oasis:names:tc:opendocument:xmlns:animation:1.0" xml:space="preserve">
  <defs class="ClipPathGroup">
   <clipPath id="presentation_clip_path" clipPathUnits="userSpaceOnUse">
-   <rect x="10779" y="2270" width="762" height="5080"/>
+   <rect x="10950" y="9890" width="421" height="2581"/>
   </clipPath>
   <clipPath id="presentation_clip_path_shrink" clipPathUnits="userSpaceOnUse">
-   <rect x="10779" y="2275" width="761" height="5070"/>
+   <rect x="10950" y="9892" width="421" height="2576"/>
   </clipPath>
  </defs>
  <defs class="TextShapeIndex">
-  <g ooo:slide="id1" ooo:id-list="id3 id4"/>
+  <g ooo:slide="id1" ooo:id-list="id3"/>
  </defs>
  <defs class="EmbeddedBulletChars">
   <g id="bullet-char-template-57356" transform="scale(0.00048828125,-0.00048828125)">
@@ -50,16 +50,11 @@
    <g id="container-id1">
     <g id="id1" class="Slide" clip-path="url(#presentation_clip_path)">
      <g class="Page">
-      <g class="com.sun.star.drawing.CustomShape">
-       <g id="id3">
-        <rect class="BoundingBox" stroke="none" fill="none" x="10779" y="2270" width="763" height="5081"/>
-       </g>
-      </g>
       <g class="com.sun.star.drawing.LineShape">
-       <g id="id4">
-        <rect class="BoundingBox" stroke="none" fill="none" x="10984" y="2270" width="353" height="2559"/>
-        <path fill="none" stroke="rgb(65,105,225)" stroke-width="35" stroke-linejoin="round" d="M 11160,4810 L 11160,2775"/>
-        <path fill="rgb(65,105,225)" stroke="none" d="M 11160,2270 L 10984,2798 11336,2798 11160,2270 Z"/>
+       <g id="id3">
+        <rect class="BoundingBox" stroke="none" fill="none" x="10949" y="9890" width="423" height="2582"/>
+        <path fill="none" stroke="rgb(65,105,225)" stroke-width="81" stroke-linejoin="round" d="M 11160,12430 L 11160,10493"/>
+        <path fill="rgb(65,105,225)" stroke="none" d="M 11160,9890 L 10950,10522 11371,10522 11160,9890 Z"/>
        </g>
       </g>
      </g>

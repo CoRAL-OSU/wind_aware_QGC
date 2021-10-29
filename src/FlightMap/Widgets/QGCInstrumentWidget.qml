@@ -59,7 +59,7 @@ ColumnLayout {
 
     Rectangle {
         id:                 windVelocityInstrument
-        height:             _outerRadius * 3/2
+        height:             _outerRadius * 2
         radius:             _outerRadius / 2
         Layout.fillWidth:   true
         color:              qgcPal.window
