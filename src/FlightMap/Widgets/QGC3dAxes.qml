@@ -62,7 +62,7 @@ Item {
             fillMode:           Image.PreserveAspectFit
             anchors.fill:       parent
             sourceSize.height:  parent.height
-            color:              qgcPal.text
+            color:              "Gray"
             transform: Rotation {
                 origin.x:       axes.width  / 2
                 origin.y:       axes.height / 2

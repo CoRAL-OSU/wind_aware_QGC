@@ -59,19 +59,19 @@ ColumnLayout {
 
     Rectangle {
         id:                 windVelocityInstrument
-        height:             _outerRadius * 2
-        radius:             _outerRadius / 2
+        height:             4*_outerRadius
+        radius:             _outerRadius / 3
         Layout.fillWidth:   true
         color:              qgcPal.window
+        border.color:       qgcPal.text
 
         DeadMouseArea { anchors.fill: parent }
 
         QGCWindVelocityWidget {
             id:                     windVelocity
-            width:                  parent.width
-            height:                 parent.height
+            _width:                 parent.width // outerRadius * 2
             vehicle:                globals.activeVehicle
-            anchors.verticalCenter: parent.verticalCenter
+            anchors.fill:           parent
         }
 
     }
