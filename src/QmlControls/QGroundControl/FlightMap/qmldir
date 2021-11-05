@@ -16,6 +16,7 @@ QGCArtificialHorizon        1.0 QGCArtificialHorizon.qml
 QGCAttitudeHUD              1.0 QGCAttitudeHUD.qml
 QGCAttitudeWidget           1.0 QGCAttitudeWidget.qml
 QGCWindVelocityWidget       1.0 QGCWindVelocityWidget.qml
+QGCWindDial                 1.0 QGCWindDial.qml
 QGCWindCompassWidget        1.0 QGCWindCompassWidget.qml
 QGCCompassWidget            1.0 QGCCompassWidget.qml
 QGCPitchIndicator           1.0 QGCPitchIndicator.qml

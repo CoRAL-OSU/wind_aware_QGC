@@ -52,27 +52,25 @@
      <g class="Page">
       <g class="com.sun.star.drawing.LineShape">
        <g id="id3">
-        <rect class="BoundingBox" stroke="none" fill="none" x="10949" y="9890" width="423" height="4065"/>
-        <path fill="none" stroke="rgb(0,0,0)" stroke-width="81" stroke-linejoin="round" d="M 11160,13561 L 11160,13480"/>
-        <path fill="none" stroke="rgb(0,0,0)" stroke-width="81" stroke-linejoin="round" d="M 11160,13023 L 11160,12942"/>
-        <path fill="none" stroke="rgb(0,0,0)" stroke-width="81" stroke-linejoin="round" d="M 11160,12485 L 11160,12404"/>
-        <path fill="none" stroke="rgb(0,0,0)" stroke-width="81" stroke-linejoin="round" d="M 11160,11947 L 11160,11866"/>
-        <path fill="none" stroke="rgb(0,0,0)" stroke-width="81" stroke-linejoin="round" d="M 11160,11409 L 11160,11328"/>
-        <path fill="none" stroke="rgb(0,0,0)" stroke-width="81" stroke-linejoin="round" d="M 11160,10871 L 11160,10790"/>
-        <path fill="rgb(0,0,0)" stroke="none" d="M 11199,13538 L 11236,13549 11274,13568 11309,13594 11336,13629 11355,13667 11366,13705 11371,13744 11366,13782 11355,13821 11336,13859 11309,13893 11274,13919 11236,13938 11199,13951 11159,13954 11121,13951 11082,13938 11046,13919 11011,13893 10984,13859 10965,13821 10954,13782 10950,13744 10954,13705 10965,13667 10984,13629 11011,13594 11046,13568 11082,13549 11121,13538 11159,13533 11199,13538 Z"/>
+        <rect class="BoundingBox" stroke="none" fill="none" x="10949" y="9890" width="423" height="3852"/>
+        <path fill="none" stroke="rgb(0,0,0)" stroke-width="81" stroke-linejoin="round" d="M 11160,13700 L 11160,13619"/>
+        <path fill="none" stroke="rgb(0,0,0)" stroke-width="81" stroke-linejoin="round" d="M 11160,13162 L 11160,13081"/>
+        <path fill="none" stroke="rgb(0,0,0)" stroke-width="81" stroke-linejoin="round" d="M 11160,12624 L 11160,12543"/>
+        <path fill="none" stroke="rgb(0,0,0)" stroke-width="81" stroke-linejoin="round" d="M 11160,12086 L 11160,12005"/>
+        <path fill="none" stroke="rgb(0,0,0)" stroke-width="81" stroke-linejoin="round" d="M 11160,11548 L 11160,11467"/>
+        <path fill="none" stroke="rgb(0,0,0)" stroke-width="81" stroke-linejoin="round" d="M 11160,11010 L 11160,10929"/>
         <path fill="rgb(0,0,0)" stroke="none" d="M 11160,9890 L 10950,10522 11371,10522 11160,9890 Z"/>
        </g>
       </g>
       <g class="com.sun.star.drawing.LineShape">
        <g id="id4">
-        <rect class="BoundingBox" stroke="none" fill="none" x="10949" y="13510" width="423" height="4001"/>
-        <path fill="none" stroke="rgb(0,0,0)" stroke-width="81" stroke-linejoin="round" d="M 11160,13903 L 11160,13984"/>
-        <path fill="none" stroke="rgb(0,0,0)" stroke-width="81" stroke-linejoin="round" d="M 11160,14441 L 11160,14522"/>
-        <path fill="none" stroke="rgb(0,0,0)" stroke-width="81" stroke-linejoin="round" d="M 11160,14979 L 11160,15060"/>
-        <path fill="none" stroke="rgb(0,0,0)" stroke-width="81" stroke-linejoin="round" d="M 11160,15517 L 11160,15598"/>
-        <path fill="none" stroke="rgb(0,0,0)" stroke-width="81" stroke-linejoin="round" d="M 11160,16055 L 11160,16136"/>
-        <path fill="none" stroke="rgb(0,0,0)" stroke-width="81" stroke-linejoin="round" d="M 11160,16593 L 11160,16674"/>
-        <path fill="rgb(0,0,0)" stroke="none" d="M 11121,13926 L 11084,13915 11046,13896 11011,13870 10984,13835 10965,13797 10954,13759 10950,13720 10954,13682 10965,13643 10984,13605 11011,13571 11046,13545 11084,13526 11121,13513 11161,13510 11199,13513 11238,13526 11274,13545 11309,13571 11336,13605 11355,13643 11366,13682 11371,13720 11366,13759 11355,13797 11336,13835 11309,13870 11274,13896 11238,13915 11199,13926 11161,13931 11121,13926 Z"/>
+        <rect class="BoundingBox" stroke="none" fill="none" x="10949" y="13659" width="423" height="3852"/>
+        <path fill="none" stroke="rgb(0,0,0)" stroke-width="81" stroke-linejoin="round" d="M 11160,13700 L 11160,13781"/>
+        <path fill="none" stroke="rgb(0,0,0)" stroke-width="81" stroke-linejoin="round" d="M 11160,14238 L 11160,14319"/>
+        <path fill="none" stroke="rgb(0,0,0)" stroke-width="81" stroke-linejoin="round" d="M 11160,14776 L 11160,14857"/>
+        <path fill="none" stroke="rgb(0,0,0)" stroke-width="81" stroke-linejoin="round" d="M 11160,15314 L 11160,15395"/>
+        <path fill="none" stroke="rgb(0,0,0)" stroke-width="81" stroke-linejoin="round" d="M 11160,15852 L 11160,15933"/>
+        <path fill="none" stroke="rgb(0,0,0)" stroke-width="81" stroke-linejoin="round" d="M 11160,16390 L 11160,16471"/>
         <path fill="rgb(0,0,0)" stroke="none" d="M 11160,17510 L 11371,16879 10950,16879 11160,17510 Z"/>
        </g>
       </g>

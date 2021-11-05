@@ -69,9 +69,9 @@
       </g>
       <g class="com.sun.star.drawing.LineShape">
        <g id="id6">
-        <rect class="BoundingBox" stroke="none" fill="none" x="1267" y="3157" width="1927" height="1929"/>
-        <path fill="none" stroke="rgb(0,0,0)" stroke-width="35" stroke-linejoin="round" d="M 3175,3175 L 1624,4728"/>
-        <path fill="rgb(0,0,0)" stroke="none" d="M 1267,5085 L 1765,4836 1516,4587 1267,5085 Z"/>
+        <rect class="BoundingBox" stroke="none" fill="none" x="1397" y="3157" width="1797" height="1797"/>
+        <path fill="none" stroke="rgb(0,0,0)" stroke-width="35" stroke-linejoin="round" d="M 3175,3175 L 1754,4596"/>
+        <path fill="rgb(0,0,0)" stroke="none" d="M 1397,4953 L 1895,4704 1646,4455 1397,4953 Z"/>
        </g>
       </g>
       <g class="com.sun.star.drawing.LineShape">
