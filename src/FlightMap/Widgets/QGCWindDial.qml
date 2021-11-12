@@ -11,12 +11,13 @@ import QGroundControl.Controllers   1.0
 
 Item {
     id: root
-    property real arrowLength:      0
-    property real arrowAngle:       0
-    property color arrowColor:      Qt.rgba(1, 0, 0, 1)
-    property real arrowHeadSize:    6
-    property real arrowLineWidth:   3
-    property real baseCircleWidth:  2
+    property real   arrowLength:      0
+    property real   arrowAngle:       0
+    property color  arrowColor:       Qt.rgba(1, 0, 0, 1)
+    property real   arrowHeadSize:    6
+    property real   arrowLineWidth:   3
+    property real   baseCircleWidth:  2
+    property real   outlineOffset:    3
 
     function drawArrow(length, angle) {
         arrowLength = length;
@@ -33,7 +34,6 @@ Item {
         anchors.fill:   parent
 
         function _drawArrow(context, length, angle) {
-
             // Setup style
             context.lineWidth = arrowLineWidth;
             context.strokeStyle = arrowColor;
@@ -49,9 +49,35 @@ Item {
                 context.rotate(angle);
                 context.translate(-width/2, -height/2);
 
+                // Draw larger arrow for outline
+                context.strokeStyle = "white"
+                context.fillStyle = "white"
+                context.lineWidth = arrowLineWidth + outlineOffset
+
                 // Draw leg of arrow
                 context.moveTo(width/2, height/2);  // Start in center of canvas
-                context.lineTo(width/2, height/2 - length + 5); // Draw thick line from center to tip of "arrow". Account for line width
+                context.lineTo(width/2, height/2 - length + outlineOffset + arrowLineWidth); // Draw thick line from center to tip of "arrow".
+                context.stroke();
+
+                // Draw head of arrow
+                context.beginPath();
+                context.moveTo(width/2, height/2 - length - outlineOffset);
+                context.lineTo(width/2 + arrowHeadSize + outlineOffset, height/2 - length + arrowHeadSize + outlineOffset / 2);
+                context.lineTo(width/2 - arrowHeadSize - outlineOffset, height/2 - length + arrowHeadSize + outlineOffset / 2);
+                context.lineTo(width/2, height/2 - length - outlineOffset);
+
+                context.fill();
+
+                // Draw smaller arrow for fill
+
+                context.strokeStyle = arrowColor
+                context.fillStyle = arrowColor
+                context.lineWidth = arrowLineWidth
+
+                // Draw leg of arrow
+                context.beginPath();
+                context.moveTo(width/2, height/2);  // Start in center of canvas
+                context.lineTo(width/2, height/2 - length + arrowLineWidth); // Draw thick line from center to tip of "arrow". Account for line width
                 context.stroke();
 
                 // Draw head of arrow

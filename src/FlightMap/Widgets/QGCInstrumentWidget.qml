@@ -76,6 +76,26 @@ ColumnLayout {
 
     }
 
+    Rectangle {
+        id:                 windInstrument
+        height:             4*_outerRadius
+        //radius:             _outerRadius / 3
+        Layout.fillWidth:   true
+        color:              qgcPal.window
+        border.color:       qgcPal.text
+
+        DeadMouseArea { anchors.fill: parent }
+
+        QGCWindWidget {
+            id:                     windWidget
+            vehicle:                globals.activeVehicle
+            anchors.fill:           parent
+        }
+
+    }
+
+
+
     TerrainProgress {
         Layout.fillWidth: true
     }

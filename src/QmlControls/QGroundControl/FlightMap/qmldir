@@ -18,6 +18,7 @@ QGCAttitudeWidget           1.0 QGCAttitudeWidget.qml
 QGCWindVelocityWidget       1.0 QGCWindVelocityWidget.qml
 QGCWindDial                 1.0 QGCWindDial.qml
 QGCWindCompassWidget        1.0 QGCWindCompassWidget.qml
+QGCWindWidget               1.0 QGCWindWidget.qml
 QGCCompassWidget            1.0 QGCCompassWidget.qml
 QGCPitchIndicator           1.0 QGCPitchIndicator.qml
 
