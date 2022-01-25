@@ -34,12 +34,29 @@ Item {
         planarGradientCanvas.requestPaint();
         verticalGradientCanvas.requestPaint();
     }
+    Item {
+        id:             instrumentLabel
+        anchors.right:  planarHeadingArea.left
+        anchors.left:   parent.left
+        anchors.top:    parent.top
+        anchors.margins: 3
+        height:         planarHeadingArea.height
 
+
+        QGCLabel {
+            id:                 windLabel
+            anchors.fill:       parent
+            text:               "Wind (m/s)"
+            wrapMode:           Text.WordWrap
+            horizontalAlignment:    Text.AlignHCenter
+
+        }
+    }
 
     // Compass, heading arrow and magnitude, aircraft heading
     Item {
         id:             planarHeadingArea
-        anchors.left:   parent.left
+        anchors.right:  verticalMagnitudeArea.left
         anchors.top:    parent.top
         width:          height
         height:         parent.height * (3/4)
@@ -254,7 +271,7 @@ Item {
                 anchors.right:          parent.right
                 anchors.bottom:         parent.bottom
                 anchors.topMargin:      3
-                height:                 parent.height / 4.5
+                height:                 parent.height / 4.2
                 border.color:           qgcPal.text
                 color:                  qgcPal.window
                 QGCLabel {
@@ -279,7 +296,7 @@ Item {
             border.color:               qgcPal.text
             color:                      qgcPal.window
             width:                      verticalGradientArea.width
-            height:                     width * 0.5
+            height:                     width * 0.6
             radius:                     4
             QGCLabel {
                 id:                     upLabel
@@ -298,7 +315,7 @@ Item {
             border.color:               qgcPal.text
             color:                      qgcPal.window
             width:                      verticalGradientArea.width
-            height:                     width * 0.5
+            height:                     width * 0.6
             radius:                     4
             QGCLabel {
                 id:                     downLabel
