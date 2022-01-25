@@ -1,3 +1,9 @@
+/**
+ * @file
+ *   @brief Displays wind velocity information to operator using gradient bars and compass.
+ *   @author Max DeSantis <max.desantis@okstate.edu>
+ */
+
 import QtQuick              2.3
 import QtQuick.Layouts      1.0
 import QtGraphicalEffects   1.0
@@ -22,7 +28,8 @@ Item {
     property real _verticalMaxSpeed:    5.0
     property real _planarMaxSpeed:      15.0
     property color  _windPointerColor:  Qt.rgba(1, 0, 0, 1)
-    on_WindSpeedChanged: {
+    property real _radius:              planarHeadingDial.radius
+    on_WindSpeedChanged: { // Updates compass and gradients when new wind velocities arrive.
         planarHeadingArrow.draw();
         planarGradientCanvas.requestPaint();
         verticalGradientCanvas.requestPaint();
@@ -33,9 +40,9 @@ Item {
     Item {
         id:             planarHeadingArea
         anchors.left:   parent.left
-        anchors.right:  verticalMagnitudeArea.left
         anchors.top:    parent.top
-        anchors.bottom: planarMagnitudeArea.top
+        width:          height
+        height:         parent.height * (3/4)
 
         // Compass Enclosing
         Rectangle {
@@ -101,11 +108,11 @@ Item {
             border.color:       qgcPal.text
             radius:             4
             color:              qgcPal.window
-            width:              parent.width / 5
+            width:              parent.width / 4.5
             height:             width * .65
             QGCLabel {
                 id:                 planarHeadingLabel
-                text:               _windHeading.toFixed(0)
+                text:               _windHeading.toFixed(0).padStart(3, '0')
                 color:              qgcPal.text
                 anchors.centerIn:   parent
                 anchors.margins:    1
@@ -115,21 +122,25 @@ Item {
     }
 
     // Gradient with wind magnitude North and East
-    Item {
+    Rectangle {
         id: planarMagnitudeArea
         anchors.left:   parent.left
         anchors.right:  verticalMagnitudeArea.left
+        anchors.top:    planarHeadingArea.bottom
         anchors.bottom: parent.bottom
-        height:         parent.height / 3
         anchors.margins: 5
+        color:          qgcPal.window
+        border.color:   qgcPal.text
+        radius:                     height / 8
         // Gradient box
+
         Canvas {
             id:                 planarGradientCanvas
             anchors.left:       parent.left
-            anchors.right:      parent.right
+            anchors.top:        parent.top
             anchors.bottom:     parent.bottom
-            height:             parent.height / 3
-
+            anchors.right:      planarMagBox.left
+            anchors.margins:    3
 
             function updateSlider(context, sliderPosition) {
                 context.lineWidth = 5;
@@ -160,24 +171,24 @@ Item {
 
         }
 
-        // Slider
-
         // Mag box
         Rectangle {
             id:                         planarMagBox
-            anchors.bottom:             planarGradientCanvas.top
-            anchors.horizontalCenter:   parent.horizontalCenter
-            anchors.margins:            5
+            anchors.top:                parent.top
+            anchors.right:              parent.right
+            anchors.bottom:             parent.bottom
             border.color:               qgcPal.text
             color:                      qgcPal.window
-            height:                     planarGradientCanvas.height
-            width:                      height * 1.6
-            radius:                     4
+            anchors.leftMargin:         3
+            width:                      parent.width * 1/4
+            radius:                     parent.radius
             QGCLabel {
                 id:                 planarMagLabel
-                text:               _windSpeedPlanar.toFixed(1)
+                text:               _windSpeedPlanar.toFixed(1).padStart(4, '0')
                 color:              qgcPal.text
                 anchors.centerIn:   parent
+                horizontalAlignment:    Text.AlignHCenter
+                padding:            6
             }
         }
 
@@ -186,69 +197,117 @@ Item {
 
     // Gradient with wind magnitude up and down
     Item {
-        id: verticalMagnitudeArea
-        anchors.right:  parent.right
-        anchors.top:    parent.top
-        anchors.bottom: parent.bottom
-        width:          parent.width / 3
-
-        anchors.margins:    5
+        id:                     verticalMagnitudeArea
+        anchors.right:          parent.right
+        anchors.top:            parent.top
+        anchors.bottom:         planarMagnitudeArea.bottom
+        anchors.rightMargin:    5
+        width:                  planarMagnitudeArea.height + 2* verticalGradientArea.anchors.margins
         // Gradient box
-
-        Canvas {
-            id:                 verticalGradientCanvas
-            anchors.right:      parent.right
-            anchors.top:        parent.top
-            anchors.bottom:     parent.bottom
-            width:              planarGradientCanvas.height
-
-            function updateSlider(context, sliderPosition) {
-                context.lineWidth = 5;
-                context.strokeStyle = "black"
-                context.lineCap = "square"
-                context.fillStyle = "black"
-                context.beginPath();
-                context.moveTo(0, height /2 - sliderPosition);
-                context.lineTo(width, height/2 - sliderPosition);
-                context.stroke();
-            }
-
-            onPaint: {
-                var ctx = getContext("2d");
-                var grad = ctx.createLinearGradient(0, 0, 0, height);
-                grad.addColorStop(0, "red");
-                grad.addColorStop(.25, "orange");
-                grad.addColorStop(.5, "green");
-                grad.addColorStop(.75, "orange")
-                grad.addColorStop(1, "red");
-                ctx.fillStyle = grad;
-                ctx.fillRect(0, 0, width, height);
-                updateSlider(ctx, -(_windSpeedDown / _verticalMaxSpeed * height / 2));
-            }
-        }
-
-        // Slider
-
-        // Mag box
         Rectangle {
-            id:                     verticalMagBox
-            anchors.right:          verticalGradientCanvas.left
-            anchors.verticalCenter: parent.verticalCenter
-            anchors.margins:        5
-            border.color:           qgcPal.text
-            color:                  qgcPal.window
-            height:                 verticalGradientCanvas.width
-            width:                  height * 1.6
-            radius:                 4
-            QGCLabel {
-                id:                 verticalMagLabel
-                text:               _windSpeedDown.toFixed(1)
-                color:              qgcPal.text
-                anchors.centerIn:   parent
+            id:                         verticalGradientArea
+            anchors.horizontalCenter:   parent.horizontalCenter
+            anchors.top:                upLabelBox.bottom
+            anchors.bottom:             downLabelBox.top
+            width:                      planarMagnitudeArea.height
+            anchors.margins:            5
+            color:                      qgcPal.window
+            border.color:               qgcPal.text
+
+            Canvas {
+                id:                 verticalGradientCanvas
+                anchors.top:        parent.top
+                anchors.left:       parent.left
+                anchors.right:      parent.right
+                anchors.bottom:     verticalMagBox.top
+                anchors.margins:    3
+
+                function updateSlider(context, sliderPosition) {
+                    context.lineWidth = 5;
+                    context.strokeStyle = "black"
+                    context.lineCap = "square"
+                    context.fillStyle = "black"
+                    context.beginPath();
+                    context.moveTo(0, height /2 - sliderPosition);
+                    context.lineTo(width, height/2 - sliderPosition);
+                    context.stroke();
+                }
+
+                onPaint: {
+                    var ctx = getContext("2d");
+                    var grad = ctx.createLinearGradient(0, 0, 0, height);
+                    grad.addColorStop(0, "red");
+                    grad.addColorStop(.25, "orange");
+                    grad.addColorStop(.5, "green");
+                    grad.addColorStop(.75, "orange")
+                    grad.addColorStop(1, "red");
+                    ctx.fillStyle = grad;
+                    ctx.fillRect(0, 0, width, height);
+                    updateSlider(ctx, -(_windSpeedDown / _verticalMaxSpeed * height / 2));
+                }
+            }
+
+            // Mag box
+            Rectangle {
+                id:                     verticalMagBox
+                anchors.left:           parent.left
+                anchors.right:          parent.right
+                anchors.bottom:         parent.bottom
+                anchors.topMargin:      3
+                height:                 parent.height / 4.5
+                border.color:           qgcPal.text
+                color:                  qgcPal.window
+                QGCLabel {
+                    id:                     verticalMagLabel
+                    text:                   _windSpeedDown.toFixed(1).padStart(4, '0')
+                    color:                  qgcPal.text
+                    anchors.centerIn:       parent
+                    horizontalAlignment:    Text.AlignHCenter
+                    padding:                6
+                }
             }
         }
 
-        // Labels
+
+
+        Rectangle {
+            id:                         upLabelBox
+            anchors.top:                parent.top
+            anchors.horizontalCenter:   parent.horizontalCenter
+            anchors.bottomMargin:       5
+            anchors.topMargin:          5
+            border.color:               qgcPal.text
+            color:                      qgcPal.window
+            width:                      verticalGradientArea.width
+            height:                     width * 0.5
+            radius:                     4
+            QGCLabel {
+                id:                     upLabel
+                text:                   "U"
+                color:                  qgcPal.text
+                anchors.centerIn:       parent
+                horizontalAlignment:    Text.AlignHCenter
+            }
+        }
+
+        Rectangle {
+            id:                         downLabelBox
+            anchors.bottom:             parent.bottom
+            anchors.horizontalCenter:   parent.horizontalCenter
+            anchors.topMargin:          5
+            border.color:               qgcPal.text
+            color:                      qgcPal.window
+            width:                      verticalGradientArea.width
+            height:                     width * 0.5
+            radius:                     4
+            QGCLabel {
+                id:                     downLabel
+                text:                   "D"
+                color:                  qgcPal.text
+                anchors.centerIn:       parent
+                horizontalAlignment:    Text.AlignHCenter
+            }
+        }
     }
 
 }

@@ -1,3 +1,9 @@
+/**
+ * @file
+ *   @brief Implements dynamic arrow dial, supports QGCWindWidget
+ *   @author Max DeSantis <max.desantis@okstate.edu>
+ */
+
 import QtQuick              2.3
 import QtQuick.Layouts      1.0
 import QtGraphicalEffects   1.0

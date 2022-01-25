@@ -57,32 +57,14 @@ ColumnLayout {
         }
     }
 
-    Rectangle {
-        id:                 windVelocityInstrument
-        height:             4*_outerRadius
-        //radius:             _outerRadius / 3
-        Layout.fillWidth:   true
-        color:              qgcPal.window
-        border.color:       qgcPal.text
-
-        DeadMouseArea { anchors.fill: parent }
-
-        QGCWindVelocityWidget {
-            id:                     windVelocity
-            _width:                 parent.width // outerRadius * 2
-            vehicle:                globals.activeVehicle
-            anchors.fill:           parent
-        }
-
-    }
-
+    // Adds separate wind velocity display information to Flight Map
     Rectangle {
         id:                 windInstrument
-        height:             4*_outerRadius
-        //radius:             _outerRadius / 3
+        height:             3*_outerRadius
         Layout.fillWidth:   true
         color:              qgcPal.window
         border.color:       qgcPal.text
+        radius:             windWidget._radius / 4
 
         DeadMouseArea { anchors.fill: parent }
 
