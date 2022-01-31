@@ -16,6 +16,7 @@
 #include "KMLPlanDomDocument.h"
 #include "QGCGeoBoundingCube.h"
 #include "QGroundControlQmlGlobal.h"
+#include "WindAwarePlanner/WindAwareMissionPlanner.h"
 
 #include <QHash>
 
@@ -30,6 +31,7 @@ class MissionSettingsItem;
 class TakeoffMissionItem;
 class QDomDocument;
 class PlanViewSettings;
+class WindAwareMissionPlanner;
 
 Q_DECLARE_LOGGING_CATEGORY(MissionControllerLog)
 
@@ -79,6 +81,7 @@ public:
     Q_PROPERTY(QGeoCoordinate       plannedHomePosition             READ plannedHomePosition            NOTIFY plannedHomePositionChanged)      ///< Includes AMSL altitude
     Q_PROPERTY(QGeoCoordinate       previousCoordinate              MEMBER _previousCoordinate          NOTIFY previousCoordinateChanged)
     Q_PROPERTY(FlightPathSegment*   splitSegment                    MEMBER _splitSegment                NOTIFY splitSegmentChanged)             ///< Segment which show show + split ui element
+    //Q_PROPERTY(WindAwareMissionPlanner windAwarePlanner             READ _windAwarePlanner              CONSTANT)
     Q_PROPERTY(double               progressPct                     READ progressPct                    NOTIFY progressPctChanged)
     Q_PROPERTY(int                  missionItemCount                READ missionItemCount               NOTIFY missionItemCountChanged)         ///< True mission item command count (only valid in Fly View)
     Q_PROPERTY(int                  currentMissionIndex             READ currentMissionIndex            NOTIFY currentMissionIndexChanged)
@@ -388,6 +391,7 @@ private:
     QGeoCoordinate              _takeoffCoordinate;
     QGeoCoordinate              _previousCoordinate;
     FlightPathSegment*          _splitSegment =                 nullptr;
+    WindAwareMissionPlanner     _windAwarePlanner;
     bool                        _onlyInsertTakeoffValid =       true;
     bool                        _isInsertTakeoffValid =         true;
     bool                        _isInsertLandValid =            false;

@@ -32,6 +32,7 @@
 #include "QGCCorePlugin.h"
 #include "TakeoffMissionItem.h"
 #include "PlanViewSettings.h"
+#include "WindAwarePlanner/WindAwareMissionPlanner.h"
 
 #define UPDATE_TIMEOUT 5000 ///< How often we check for bounding box changes
 
@@ -62,15 +63,18 @@ MissionController::MissionController(PlanMasterController* masterController, QOb
     , _visualItems          (new QmlObjectListModel(this))
     , _planViewSettings     (qgcApp()->toolbox()->settingsManager()->planViewSettings())
     , _appSettings          (qgcApp()->toolbox()->settingsManager()->appSettings())
+    , _windAwarePlanner     (parent)
 {
     _resetMissionFlightStatus();
 
     _updateTimer.setSingleShot(true);
+    //qDebug() << "Mission planner being built by " << parent->objectName();
 
     connect(&_updateTimer,                                  &QTimer::timeout,                           this, &MissionController::_updateTimeout);
     connect(_planViewSettings->takeoffItemNotRequired(),    &Fact::rawValueChanged,                     this, &MissionController::_takeoffItemNotRequiredChanged);
     connect(this,                                           &MissionController::missionDistanceChanged, this, &MissionController::recalcTerrainProfile);
-
+    connect(this, &MissionController::missionItemCountChanged, &_windAwarePlanner, &WindAwareMissionPlanner::updateTrajectoryRecommendation);
+    // Pick better signal or make custom one
     // The follow is used to compress multiple recalc calls in a row to into a single call.
     connect(this, &MissionController::_recalcMissionFlightStatusSignal, this, &MissionController::_recalcMissionFlightStatus,   Qt::QueuedConnection);
     connect(this, &MissionController::_recalcFlightPathSegmentsSignal,  this, &MissionController::_recalcFlightPathSegments,    Qt::QueuedConnection);
