@@ -608,6 +608,48 @@ Item {
         }
 
         //-----------------------------------------------------------
+        // Wind-aware trajectory update
+        Rectangle {
+            id:                 windAwareRect
+            anchors.margins:    _toolsMargin
+            anchors.left:       toolStrip.right
+            anchors.top:        parent.top
+            z:                  QGroundControl.zOrderWidgets
+            width:              _rightPanelWidth;
+            height:             width/2;
+            color:              qgcPal.window;
+
+            QGCLabel {
+                id:             windRecommendLabel;
+                text:           "An alternate, optimal trajectory has been calculated."
+                wrapMode:           Text.WordWrap
+                horizontalAlignment:    Text.AlignHCenter
+                anchors.left:   parent.left
+                anchors.right:  parent.right
+                anchors.top:    parent.top
+            }
+            Button {
+                id:             windAcceptButton
+                anchors.left:   parent.left
+                anchors.bottom:    parent.bottom
+                width:          parent.width/2
+                height:         parent.height/2
+                text:           "Accept"
+                onClicked:      _planMasterController.windAwarePlanner.newTrajectoryResponse(true)//do something?
+            }
+
+            Button {
+                id:             windRejectButton
+                anchors.left:   windAcceptButton.right
+                anchors.right:  parent.right
+                anchors.bottom:    parent.bottom
+                height:         parent.height/2
+                text:           "Reject"
+                onClicked:      _planMasterController.windAwarePlanner.newTrajectoryResponse(false)
+            }
+        }
+
+        //-----------------------------------------------------------
         // Left tool strip
         ToolStrip {
             id:                 toolStrip

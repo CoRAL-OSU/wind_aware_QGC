@@ -20,16 +20,35 @@
 #include "QGCCorePlugin.h"
 #include "QGCApplication.h"
 #include "string.h"
+#include "MissionController.h"
 
-WindAwareMissionPlanner::WindAwareMissionPlanner(QObject* parent) : QObject(parent)
+WindAwareMissionPlanner::WindAwareMissionPlanner(PlanMasterController* masterController, QObject* parent)
+    : QObject(parent),
+      _masterController(masterController)
+
 {
     // Store mission controller
     qDebug("wind aware planner live");
     this->count = 10;
+    connect(masterController->missionController(), &MissionController::testSignal, this, &WindAwareMissionPlanner::updateTrajectoryRecommendation);
+}
+
+void WindAwareMissionPlanner::newTrajectoryResponse(bool response) {
+
+    if(response) {
+        qDebug() << "TRUE!";
+
+    }
+    else {
+        qDebug() << "FALSE!";
+    }
 }
 
 void WindAwareMissionPlanner::updateTrajectoryRecommendation() {
 
     qDebug() << "Wind: " << this->count++;
+    if (this->count % 5 == 0) {
+        _masterController->missionController()->insertSimpleMissionItem(QGeoCoordinate(37.803784, -122.462276), 2, true);
+    }
 
 }

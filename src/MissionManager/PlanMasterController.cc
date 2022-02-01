@@ -20,6 +20,7 @@
 #include "StructureScanPlanCreator.h"
 #include "CorridorScanPlanCreator.h"
 #include "BlankPlanCreator.h"
+#include "WindAwarePlanner/WindAwareMissionPlanner.h"
 #if defined(QGC_AIRMAP_ENABLED)
 #include "AirspaceFlightPlanProvider.h"
 #endif
@@ -44,6 +45,7 @@ PlanMasterController::PlanMasterController(QObject* parent)
     , _missionController    (this)
     , _geoFenceController   (this)
     , _rallyPointController (this)
+    , _windAwarePlanner     (this, parent)
 {
     _commonInit();
 }
@@ -57,6 +59,7 @@ PlanMasterController::PlanMasterController(MAV_AUTOPILOT firmwareType, MAV_TYPE 
     , _missionController    (this)
     , _geoFenceController   (this)
     , _rallyPointController (this)
+    , _windAwarePlanner     (this, parent)
 {
     _commonInit();
 }

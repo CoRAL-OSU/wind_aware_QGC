@@ -100,6 +100,7 @@
 #include "ToolStripAction.h"
 #include "ToolStripActionList.h"
 #include "QGCMAVLink.h"
+#include "WindAwarePlanner/WindAwareMissionPlanner.h"
 #include "VehicleLinkManager.h"
 
 #if defined(QGC_ENABLE_PAIRING)
@@ -527,6 +528,7 @@ void QGCApplication::_initCommon()
     qmlRegisterUncreatableType<MissionController>       (kQGCControllers,                   1, 0, "MissionController",          kRefOnly);
     qmlRegisterUncreatableType<GeoFenceController>      (kQGCControllers,                   1, 0, "GeoFenceController",         kRefOnly);
     qmlRegisterUncreatableType<RallyPointController>    (kQGCControllers,                   1, 0, "RallyPointController",       kRefOnly);
+    qmlRegisterUncreatableType<WindAwareMissionPlanner> (kQGCControllers,                   1, 0, "WindAwareMissionPlanner",    kRefOnly);
 
     qmlRegisterUncreatableType<MissionItem>         (kQGroundControl,                       1, 0, "MissionItem",                kRefOnly);
     qmlRegisterUncreatableType<VisualMissionItem>   (kQGroundControl,                       1, 0, "VisualMissionItem",          kRefOnly);
@@ -575,7 +577,6 @@ void QGCApplication::_initCommon()
     qmlRegisterType<TerrainProfile>                 ("QGroundControl.Controls",             1, 0, "TerrainProfile");
     qmlRegisterType<ToolStripAction>                ("QGroundControl.Controls",             1, 0, "ToolStripAction");
     qmlRegisterType<ToolStripActionList>            ("QGroundControl.Controls",             1, 0, "ToolStripActionList");
-
 #ifndef __mobile__
 #ifndef NO_SERIAL_LINK
     qmlRegisterType<FirmwareUpgradeController>      (kQGCControllers,                       1, 0, "FirmwareUpgradeController");
