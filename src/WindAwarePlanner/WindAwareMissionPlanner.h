@@ -15,6 +15,10 @@ class WindAwareMissionPlanner : public QObject
 
 public:
     WindAwareMissionPlanner(PlanMasterController* masterController, QObject* parent = nullptr);
+
+    // Return list of mission items for processing
+    void fetchCurrentMission();
+
     int count;
 
 //    Q_PROPERTY(WindAwareMissionPlanner*    windAwarePlanner    READ windAwarePlanner               CONSTANT)

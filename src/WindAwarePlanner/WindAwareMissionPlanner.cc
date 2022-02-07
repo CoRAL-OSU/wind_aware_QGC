@@ -37,11 +37,17 @@ void WindAwareMissionPlanner::newTrajectoryResponse(bool response) {
 
     if(response) {
         qDebug() << "TRUE!";
+        QmlObjectListModel* itemList = _masterController->missionController()->visualItems(); // Can use this to extract mission item list
 
+        for(int i = 0; i < itemList->count(); i++) {
+            qDebug() << itemList->objectList()->at(i);
+        }
     }
     else {
         qDebug() << "FALSE!";
+        _masterController->missionController()->removeAll(); // Can use this to erase mission items.
     }
+
 }
 
 void WindAwareMissionPlanner::updateTrajectoryRecommendation() {
