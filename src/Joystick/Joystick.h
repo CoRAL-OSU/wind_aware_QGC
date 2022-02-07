@@ -18,6 +18,7 @@
 #include "QGCLoggingCategory.h"
 #include "Vehicle.h"
 #include "MultiVehicleManager.h"
+#include "JoystickMavCommand.h"
 #include <atomic>
 
 Q_DECLARE_LOGGING_CATEGORY(JoystickLog)
@@ -298,6 +299,8 @@ protected:
     QStringList                     _availableActionTitles;
     MultiVehicleManager*            _multiVehicleManager = nullptr;
 
+    QList<JoystickMavCommand> _customMavCommands;
+
     static const float  _minAxisFrequencyHz;
     static const float  _maxAxisFrequencyHz;
     static const float  _minButtonFrequencyHz;
@@ -311,6 +314,7 @@ private:
     static const char* _buttonActionNameKey;
     static const char* _buttonActionRepeatKey;
     static const char* _throttleModeSettingsKey;
+    static const char* _negativeThrustSettingsKey;
     static const char* _exponentialSettingsKey;
     static const char* _accumulatorSettingsKey;
     static const char* _deadbandSettingsKey;

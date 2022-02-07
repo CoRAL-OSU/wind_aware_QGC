@@ -40,7 +40,8 @@ Item {
     readonly property var   _defaultVehicleCoordinate:  QtPositioning.coordinate(37.803784, -122.462276)
     readonly property bool  _waypointsOnlyMode:         QGroundControl.corePlugin.options.missionWaypointsOnly
 
-    property bool   _airspaceEnabled:                    QGroundControl.airmapSupported ? (QGroundControl.settingsManager.airMapSettings.enableAirMap.rawValue && QGroundControl.airspaceManager.connected): false
+    property bool   _airspaceEnabled:                   QGroundControl.airmapSupported ? (QGroundControl.settingsManager.airMapSettings.enableAirMap.rawValue && QGroundControl.airspaceManager.connected): false
+    property var    _planMasterController:              planMasterController
     property var    _missionController:                 _planMasterController.missionController
     property var    _geoFenceController:                _planMasterController.geoFenceController
     property var    _rallyPointController:              _planMasterController.rallyPointController
@@ -116,20 +117,12 @@ Item {
 
     Connections {
         target: _appSettings ? _appSettings.defaultMissionItemAltitude : null
-        onRawValueChanged: {
+        function onRawValueChanged() {
             if (_visualItems.count > 1) {
-                mainWindow.showComponentDialog(applyNewAltitude, qsTr("Apply new altitude"), mainWindow.showDialogDefaultWidth, StandardButton.Yes | StandardButton.No)
-            }
-        }
-    }
-
-    Component {
-        id: applyNewAltitude
-        QGCViewMessage {
-            message:    qsTr("You have changed the default altitude for mission items. Would you like to apply that altitude to all the items in the current mission?")
-            function accept() {
-                hideDialog()
-                _missionController.applyDefaultMissionAltitude()
+                mainWindow.showMessageDialog(qsTr("Apply new altitude"),
+                                             qsTr("You have changed the default altitude for mission items. Would you like to apply that altitude to all the items in the current mission?"),
+                                             StandardButton.Yes | StandardButton.No,
+                                             function() { _missionController.applyDefaultMissionAltitude() })
             }
         }
     }
@@ -159,7 +152,7 @@ Item {
                     onClicked: {
                         _planMasterController.showPlanFromManagerVehicle()
                         _promptForPlanUsageShowing = false
-                        hideDialog();
+                        close();
                     }
                 }
 
@@ -173,45 +166,22 @@ Item {
                             _planMasterController.dirty = true
                         }
                         _promptForPlanUsageShowing = false
-                        hideDialog()
+                        close()
                     }
                 }
             }
         }
     }
 
-
-    Component {
-        id: firmwareOrVehicleMismatchUploadDialogComponent
-        QGCViewMessage {
-            message: qsTr("This Plan was created for a different firmware or vehicle type than the firmware/vehicle type of vehicle you are uploading to. " +
-                            "This can lead to errors or incorrect behavior. " +
-                            "It is recommended to recreate the Plan for the correct firmware/vehicle type.\n\n" +
-                            "Click 'Ok' to upload the Plan anyway.")
-
-            function accept() {
-                _planMasterController.sendToVehicle()
-                hideDialog()
-            }
-        }
-    }
-
     Connections {
         target: QGroundControl.airspaceManager
-        onAirspaceVisibleChanged: {
+        function onAirspaceVisibleChanged() {
             planControlColapsed = QGroundControl.airspaceManager.airspaceVisible
         }
     }
 
-    Component {
-        id: noItemForKML
-        QGCViewMessage {
-            message:    qsTr("You need at least one item to create a KML.")
-        }
-    }
-
     PlanMasterController {
-        id:         _planMasterController
+        id:         planMasterController
         flyView:    false
 
         Component.onCompleted: {
@@ -223,7 +193,7 @@ Item {
         onPromptForPlanUsageOnVehicleChange: {
             if (!_promptForPlanUsageShowing) {
                 _promptForPlanUsageShowing = true
-                mainWindow.showPopupDialogFromComponent(promptForPlanUsageOnVehicleChangePopupComponent)
+                promptForPlanUsageOnVehicleChangePopupComponent.createObject(mainWindow).open()
             }
         }
 
@@ -260,7 +230,13 @@ Item {
                     mainWindow.showMessageDialog(qsTr("Send To Vehicle"), qsTr("Current mission must be paused prior to uploading a new Plan"))
                     break
                 case MissionController.SendToVehiclePreCheckStateFirwmareVehicleMismatch:
-                    mainWindow.showComponentDialog(firmwareOrVehicleMismatchUploadDialogComponent, qsTr("Plan Upload"), mainWindow.showDialogDefaultWidth, StandardButton.Ok | StandardButton.Cancel)
+                    mainWindow.showMessageDialog(qsTr("Plan Upload"),
+                                                 qsTr("This Plan was created for a different firmware or vehicle type than the firmware/vehicle type of vehicle you are uploading to. " +
+                                                      "This can lead to errors or incorrect behavior. " +
+                                                      "It is recommended to recreate the Plan for the correct firmware/vehicle type.\n\n" +
+                                                      "Click 'Ok' to upload the Plan anyway."),
+                                                 StandardButton.Ok | StandardButton.Cancel,
+                                                 function() { _planMasterController.sendToVehicle() })
                     break
             }
         }
@@ -303,7 +279,7 @@ Item {
     Connections {
         target: _missionController
 
-        onNewItemsFromVehicle: {
+        function onNewItemsFromVehicle() {
             if (_visualItems && _visualItems.count !== 1) {
                 mapFitFunctions.fitMapViewportToMissionItems()
             }
@@ -353,8 +329,6 @@ Item {
         }
     }
 
-    property int _moveDialogMissionItemIndex
-
     QGCFileDialog {
         id:             fileDialog
         folder:         _appSettings ? _appSettings.missionSavePath : ""
@@ -375,38 +349,6 @@ Item {
             _planMasterController.fitViewportToItems()
             _missionController.setCurrentPlanViewSeqNum(0, true)
             close()
-        }
-    }
-
-    Component {
-        id: moveDialog
-        QGCViewDialog {
-            function accept() {
-                var toIndex = toCombo.currentIndex
-                if (toIndex === 0) {
-                    toIndex = 1
-                }
-                _missionController.moveMissionItem(_moveDialogMissionItemIndex, toIndex)
-                hideDialog()
-            }
-            Column {
-                anchors.left:   parent.left
-                anchors.right:  parent.right
-                spacing:        ScreenTools.defaultFontPixelHeight
-
-                QGCLabel {
-                    anchors.left:   parent.left
-                    anchors.right:  parent.right
-                    wrapMode:       Text.WordWrap
-                    text:           qsTr("Move the selected mission item to the be after following mission item:")
-                }
-
-                QGCComboBox {
-                    id:             toCombo
-                    model:          _visualItems.count
-                    currentIndex:   _moveDialogMissionItemIndex
-                }
-            }
         }
     }
 
@@ -545,13 +487,13 @@ Item {
 
                 Connections {
                     target:                 _missionController
-                    onSplitSegmentChanged:  splitSegmentItem._updateSplitCoord()
+                    function onSplitSegmentChanged()  { splitSegmentItem._updateSplitCoord() }
                 }
 
                 Connections {
                     target:                 _missionController.splitSegment
-                    onCoordinate1Changed:   splitSegmentItem._updateSplitCoord()
-                    onCoordinate2Changed:   splitSegmentItem._updateSplitCoord()
+                    function onCoordinate1Changed()   { splitSegmentItem._updateSplitCoord() }
+                    function onCoordinate2Changed()   { splitSegmentItem._updateSplitCoord() }
                 }
             }
 
@@ -977,53 +919,33 @@ Item {
         }
     }
 
-    Component {
-        id: syncLoadFromVehicleOverwrite
-        QGCViewMessage {
-            id:         syncLoadFromVehicleCheck
-            message:   qsTr("You have unsaved/unsent changes. Loading from the Vehicle will lose these changes. Are you sure you want to load from the Vehicle?")
-            function accept() {
-                hideDialog()
-                _planMasterController.loadFromVehicle()
-            }
-        }
+    function showLoadFromFileOverwritePrompt(title) {
+        mainWindow.showMessageDialog(title,
+                                     qsTr("You have unsaved/unsent changes. Loading from a file will lose these changes. Are you sure you want to load from a file?"),
+                                     StandardButton.Yes | StandardButton.Cancel,
+                                     function() { _planMasterController.loadFromSelectedFile() } )
     }
 
-    Component {
-        id: syncLoadFromFileOverwrite
-        QGCViewMessage {
-            id:         syncLoadFromVehicleCheck
-            message:   qsTr("You have unsaved/unsent changes. Loading from a file will lose these changes. Are you sure you want to load from a file?")
-            function accept() {
-                hideDialog()
-                _planMasterController.loadFromSelectedFile()
-            }
-        }
-    }
-
-    property var createPlanRemoveAllPromptDialogMapCenter
-    property var createPlanRemoveAllPromptDialogPlanCreator
     Component {
         id: createPlanRemoveAllPromptDialog
-        QGCViewMessage {
-            message: qsTr("Are you sure you want to remove current plan and create a new plan? ")
-            function accept() {
-                createPlanRemoveAllPromptDialogPlanCreator.createPlan(createPlanRemoveAllPromptDialogMapCenter)
-                hideDialog()
-            }
+
+        QGCSimpleMessageDialog {
+            title:      qsTr("Create Plan")
+            text:       qsTr("Are you sure you want to remove current plan and create a new plan? ")
+            buttons:    StandardButton.Yes | StandardButton.No
+
+            property var mapCenter
+            property var planCreator
+
+            onAccepted: planCreator.createPlan(mapCenter)
         }
     }
 
-    Component {
-        id: clearVehicleMissionDialog
-        QGCViewMessage {
-            message: qsTr("Are you sure you want to remove all mission items and clear the mission from the vehicle?")
-            function accept() {
-                _planMasterController.removeAllFromVehicle()
-                _missionController.setCurrentPlanViewSeqNum(0, true)
-                hideDialog()
-            }
-        }
+    function clearButtonClicked() {
+        mainWindow.showMessageDialog(qsTr("Clear"),
+                                     qsTr("Are you sure you want to remove all mission items and clear the mission from the vehicle?"),
+                                     StandardButton.Yes | StandardButton.Cancel,
+                                     function() { _planMasterController.removeAllFromVehicle(); _missionController.setCurrentPlanViewSeqNum(0, true) })
     }
 
     //- ToolStrip DropPanel Components
@@ -1061,6 +983,17 @@ Item {
         } // Column
     }
 
+    function downloadClicked(title) {
+        if (_planMasterController.dirty) {
+            mainWindow.showMessageDialog(title,
+                                         qsTr("You have unsaved/unsent changes. Loading from the Vehicle will lose these changes. Are you sure you want to load from the Vehicle?"),
+                                         StandardButton.Yes | StandardButton.Cancel,
+                                         function() { _planMasterController.loadFromVehicle() })
+        } else {
+            _planMasterController.loadFromVehicle()
+        }
+    }
+
     Component {
         id: syncDropPanel
 
@@ -1068,7 +1001,7 @@ Item {
             id:         columnHolder
             spacing:    _margin
 
-            property string _overwriteText: (_editingLayer == _layerMission) ? qsTr("Mission overwrite") : ((_editingLayer == _layerGeoFence) ? qsTr("GeoFence overwrite") : qsTr("Rally Points overwrite"))
+            property string _overwriteText: qsTr("Plan overwrite")
 
             QGCLabel {
                 id:                 unsavedChangedLabel
@@ -1133,9 +1066,7 @@ Item {
                             preventStealing:    true
                             onClicked:          {
                                 if (_planMasterController.containsItems) {
-                                    createPlanRemoveAllPromptDialogMapCenter = _mapCenter()
-                                    createPlanRemoveAllPromptDialogPlanCreator = object
-                                    mainWindow.showComponentDialog(createPlanRemoveAllPromptDialog, qsTr("Create Plan"), mainWindow.showDialogDefaultWidth, StandardButton.Yes | StandardButton.No)
+                                    createPlanRemoveAllPromptDialog.createObject(mainWindow, { mapCenter: _mapCenter(), planCreator: object }).open()
                                 } else {
                                     object.createPlan(_mapCenter())
                                 }
@@ -1163,17 +1094,6 @@ Item {
                 columnSpacing:      ScreenTools.defaultFontPixelWidth
                 visible:            storageSection.visible
 
-                /*QGCButton {
-                    text:               qsTr("New...")
-                    Layout.fillWidth:   true
-                    onClicked:  {
-                        dropPanel.hide()
-                        if (_planMasterController.containsItems) {
-                            mainWindow.showComponentDialog(removeAllPromptDialog, qsTr("New Plan"), mainWindow.showDialogDefaultWidth, StandardButton.Yes | StandardButton.No)
-                        }
-                    }
-                }*/
-
                 QGCButton {
                     text:               qsTr("Open...")
                     Layout.fillWidth:   true
@@ -1181,7 +1101,7 @@ Item {
                     onClicked: {
                         dropPanel.hide()
                         if (_planMasterController.dirty) {
-                            mainWindow.showComponentDialog(syncLoadFromFileOverwrite, columnHolder._overwriteText, mainWindow.showDialogDefaultWidth, StandardButton.Yes | StandardButton.Cancel)
+                            showLoadFromFileOverwritePrompt(columnHolder._overwriteText)
                         } else {
                             _planMasterController.loadFromSelectedFile()
                         }
@@ -1220,7 +1140,7 @@ Item {
                     onClicked: {
                         // First point does not count
                         if (_visualItems.count < 2) {
-                            mainWindow.showComponentDialog(noItemForKML, qsTr("KML"), mainWindow.showDialogDefaultWidth, StandardButton.Cancel)
+                            mainWindow.showMessageDialog(qsTr("KML"), qsTr("You need at least one item to create a KML."))
                             return
                         }
                         dropPanel.hide()
@@ -1256,13 +1176,10 @@ Item {
                     Layout.fillWidth:   true
                     enabled:            !_planMasterController.offline && !_planMasterController.syncInProgress
                     visible:            !QGroundControl.corePlugin.options.disableVehicleConnection
+
                     onClicked: {
                         dropPanel.hide()
-                        if (_planMasterController.dirty) {
-                            mainWindow.showComponentDialog(syncLoadFromVehicleOverwrite, columnHolder._overwriteText, mainWindow.showDialogDefaultWidth, StandardButton.Yes | StandardButton.Cancel)
-                        } else {
-                            _planMasterController.loadFromVehicle()
-                        }
+                        downloadClicked(columnHolder._overwriteText)
                     }
                 }
 
@@ -1274,7 +1191,7 @@ Item {
                     visible:            !QGroundControl.corePlugin.options.disableVehicleConnection
                     onClicked: {
                         dropPanel.hide()
-                        mainWindow.showComponentDialog(clearVehicleMissionDialog, text, mainWindow.showDialogDefaultWidth, StandardButton.Yes | StandardButton.Cancel)
+                        clearButtonClicked()
                     }
                 }
             }

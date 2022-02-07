@@ -31,8 +31,6 @@ SetupPage {
             width:  availableWidth
             height: Math.max(leftColumn.height, rightColumn.height)
 
-            readonly property string  dialogTitle: qsTr("Radio")
-
             function setupPageCompleted() {
                 controller.start()
                 updateChannelCount()
@@ -56,58 +54,27 @@ SetupPage {
             }
 
             Component {
-                id: copyTrimsDialogComponent
-                QGCViewMessage {
-                    message: qsTr("Center your sticks and move throttle all the way down, then press Ok to copy trims. After pressing Ok, reset the trims on your radio back to zero.")
-                    function accept() {
-                        hideDialog()
-                        controller.copyTrims()
-                    }
-                }
-            }
-
-            Component {
-                id: zeroTrimsDialogComponent
-                QGCViewMessage {
-                    message: qsTr("Before calibrating you should zero all your trims and subtrims. Click Ok to start Calibration.\n\n%1").arg(
-                                 (QGroundControl.multiVehicleManager.activeVehicle.px4Firmware ? "" : qsTr("Please ensure all motor power is disconnected AND all props are removed from the vehicle.")))
-                    function accept() {
-                        hideDialog()
-                        controller.nextButtonClicked()
-                    }
-                }
-            }
-
-            Component {
-                id: channelCountDialogComponent
-                QGCViewMessage {
-                    message: controller.channelCount == 0 ? qsTr("Please turn on transmitter.") : qsTr("%1 channels or more are needed to fly.").arg(controller.minChannelCount)
-                }
-            }
-
-            Component {
                 id: spektrumBindDialogComponent
-                QGCViewDialog {
 
-                    function accept() {
-                        controller.spektrumBindMode(radioGroup.checkedButton.bindMode)
-                        hideDialog()
-                    }
+                QGCPopupDialog {
+                    title:      qsTr("Spektrum Bind")
+                    buttons:    StandardButton.Ok | StandardButton.Cancel
 
-                    function reject() {
-                        hideDialog()
-                    }
+                    onAccepted: { controller.spektrumBindMode(radioGroup.checkedButton.bindMode) }
 
                     ButtonGroup { id: radioGroup }
 
-                    Column {
-                        anchors.fill:   parent
-                        spacing:        5
+                    ColumnLayout {
+                        spacing: ScreenTools.defaultFontPixelHeight / 2
 
                         QGCLabel {
-                            width:      parent.width
                             wrapMode:   Text.WordWrap
-                            text:       qsTr("Click Ok to place your Spektrum receiver in the bind mode. Select the specific receiver type below:")
+                            text:       qsTr("Click Ok to place your Spektrum receiver in the bind mode.")
+                        }
+
+                        QGCLabel {
+                            wrapMode:   Text.WordWrap
+                            text:       qsTr("Select the specific receiver type below:")
                         }
 
                         QGCRadioButton {
@@ -130,7 +97,7 @@ SetupPage {
                         }
                     }
                 }
-            } // Component - spektrumBindDialogComponent
+            }
 
             // Live channel monitor control component
             Component {
@@ -346,7 +313,19 @@ SetupPage {
 
                         onClicked: {
                             if (text === qsTr("Calibrate")) {
-                                mainWindow.showComponentDialog(zeroTrimsDialogComponent, dialogTitle, mainWindow.showDialogDefaultWidth, StandardButton.Ok | StandardButton.Cancel)
+                                if (controller.channelCount < controller.minChannelCount) {
+                                    mainWindow.showMessageDialog(qsTr("Radio Not Ready"),
+                                                                 controller.channelCount == 0 ? qsTr("Please turn on transmitter.") :
+                                                                                                (controller.channelCount < controller.minChannelCount ?
+                                                                                                     qsTr("%1 channels or more are needed to fly.").arg(controller.minChannelCount) :
+                                                                                                     qsTr("Ready to calibrate.")))
+                                } else {
+                                    mainWindow.showMessageDialog(qsTr("Zero Trims"),
+                                                                 qsTr("Before calibrating you should zero all your trims and subtrims. Click Ok to start Calibration.\n\n%1").arg(
+                                                                     (QGroundControl.multiVehicleManager.activeVehicle.px4Firmware ? "" : qsTr("Please ensure all motor power is disconnected AND all props are removed from the vehicle."))),
+                                                                 StandardButton.Ok,
+                                                                 function() { controller.nextButtonClicked() })
+                                }
                             } else {
                                 controller.nextButtonClicked()
                             }
@@ -380,8 +359,8 @@ SetupPage {
                     Repeater {
                         model: QGroundControl.multiVehicleManager.activeVehicle.px4Firmware ?
                                    (QGroundControl.multiVehicleManager.activeVehicle.multiRotor ?
-                                       [ "RC_MAP_AUX1", "RC_MAP_AUX2", "RC_MAP_PARAM1", "RC_MAP_PARAM2", "RC_MAP_PARAM3"] :
-                                       [ "RC_MAP_FLAPS", "RC_MAP_AUX1", "RC_MAP_AUX2", "RC_MAP_PARAM1", "RC_MAP_PARAM2", "RC_MAP_PARAM3"]) :
+                                        [ "RC_MAP_AUX1", "RC_MAP_AUX2", "RC_MAP_PARAM1", "RC_MAP_PARAM2", "RC_MAP_PARAM3"] :
+                                        [ "RC_MAP_FLAPS", "RC_MAP_AUX1", "RC_MAP_AUX2", "RC_MAP_PARAM1", "RC_MAP_PARAM2", "RC_MAP_PARAM3"]) :
                                    0
 
                         RowLayout {
@@ -406,12 +385,15 @@ SetupPage {
                     QGCButton {
                         id:         bindButton
                         text:       qsTr("Spektrum Bind")
-                        onClicked:  mainWindow.showComponentDialog(spektrumBindDialogComponent, dialogTitle, mainWindow.showDialogDefaultWidth, StandardButton.Ok | StandardButton.Cancel)
+                        onClicked:  spektrumBindDialogComponent.createObject(mainWindow).open()
                     }
 
                     QGCButton {
                         text:       qsTr("Copy Trims")
-                        onClicked:  mainWindow.showComponentDialog(copyTrimsDialogComponent, dialogTitle, mainWindow.showDialogDefaultWidth, StandardButton.Ok | StandardButton.Cancel)
+                        onClicked:  mainWindow.showMessageDialog(qsTr("Copy Trims"),
+                                                                 qsTr("Center your sticks and move throttle all the way down, then press Ok to copy trims. After pressing Ok, reset the trims on your radio back to zero."),
+                                                                 StandardButton.Ok | StandardButton.Cancel,
+                                                                 function() { controller.copyTrims() })
                     }
                 }
             } // Column - Left Column

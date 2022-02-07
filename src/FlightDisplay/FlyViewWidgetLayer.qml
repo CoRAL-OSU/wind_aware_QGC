@@ -62,7 +62,7 @@ Item {
         topEdgeRightInset:      parentToolInsets.topEdgeRightInset
         bottomEdgeLeftInset:    parentToolInsets.bottomEdgeLeftInset
         bottomEdgeCenterInset:  mapScale.centerInset
-        bottomEdgeRightInset:   telemetryPanel.bottomInset
+        bottomEdgeRightInset:   0
     }
 
     FlyViewMissionCompleteDialog {
@@ -151,7 +151,53 @@ Item {
         id:                 telemetryPanel
         x:                  recalcXPosition()
         anchors.margins:    _toolsMargin
-        anchors.bottom:     parent.bottom
+
+        // States for custom layout support
+        states: [
+            State {
+                name: "bottom"
+                when: telemetryPanel.bottomMode
+
+                AnchorChanges {
+                    target: telemetryPanel
+                    anchors.top: undefined
+                    anchors.bottom: parent.bottom
+                    anchors.right: undefined
+                    anchors.verticalCenter: undefined
+                }
+
+                PropertyChanges {
+                    target: telemetryPanel
+                    x: recalcXPosition()
+                }
+            },
+
+            State {
+                name: "right-video"
+                when: !telemetryPanel.bottomMode && photoVideoControl.visible
+
+                AnchorChanges {
+                    target: telemetryPanel
+                    anchors.top: photoVideoControl.bottom
+                    anchors.bottom: undefined
+                    anchors.right: parent.right
+                    anchors.verticalCenter: undefined
+                }
+            },
+
+            State {
+                name: "right-novideo"
+                when: !telemetryPanel.bottomMode && !photoVideoControl.visible
+
+                AnchorChanges {
+                    target: telemetryPanel
+                    anchors.top: undefined
+                    anchors.bottom: undefined
+                    anchors.right: parent.right
+                    anchors.verticalCenter: parent.verticalCenter
+                }
+            }
+        ]
 
         function recalcXPosition() {
             // First try centered
@@ -167,8 +213,6 @@ Item {
                 return parentToolInsets.leftEdgeBottomInset + _toolsMargin
             }
         }
-
-        property real bottomInset: height
     }
 
     //-- Virtual Joystick
@@ -199,7 +243,7 @@ Item {
         maxHeight:              parent.height - y - parentToolInsets.bottomEdgeLeftInset - _toolsMargin
         visible:                !QGroundControl.videoManager.fullScreen
 
-        onDisplayPreFlightChecklist: mainWindow.showPopupDialogFromComponent(preFlightChecklistPopup)
+        onDisplayPreFlightChecklist: preFlightChecklistPopup.createObject(mainWindow).open()
 
         property real leftInset: x + width
     }

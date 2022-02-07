@@ -49,7 +49,7 @@ Rectangle {
 
     Connections {
         target: _controllerVehicle
-        onSupportsTerrainFrameChanged: {
+        function onSupportsTerrainFrameChanged() {
             if (!_controllerVehicle.supportsTerrainFrame && _missionController.globalAltitudeMode === QGroundControl.AltitudeModeTerrainFrame) {
                 _missionController.globalAltitudeMode = QGroundControl.AltitudeModeCalcAboveTerrain
             }
@@ -79,7 +79,7 @@ Rectangle {
                 if (!_controllerVehicle.supportsTerrainFrame) {
                     removeModes.push(QGroundControl.AltitudeModeTerrainFrame)
                 }
-                mainWindow.showPopupDialogFromComponent(altModeDialogComponent, { rgRemoveModes: removeModes, updateAltModeFn: updateFunction })
+                altModeDialogComponent.createObject(mainWindow, { rgRemoveModes: removeModes, updateAltModeFn: updateFunction }).open()
             }
 
             RowLayout {

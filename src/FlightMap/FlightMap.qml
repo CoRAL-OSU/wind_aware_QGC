@@ -66,12 +66,13 @@ Map {
     }
 
     function centerToSpecifiedLocation() {
-        mainWindow.showComponentDialog(specifyMapPositionDialog, qsTr("Specify Position"), mainWindow.showDialogDefaultWidth, StandardButton.Close)
+        specifyMapPositionDialog.createObject(mainWindow).open()
     }
 
     Component {
         id: specifyMapPositionDialog
         EditPositionDialog {
+            title:                  qsTr("Specify Position")
             coordinate:             center
             onCoordinateChanged:    center = coordinate
         }
@@ -109,12 +110,12 @@ Map {
 
     Connections {
         target:             QGroundControl.settingsManager.flightMapSettings.mapType
-        onRawValueChanged:  updateActiveMapType()
+        function onRawValueChanged() { updateActiveMapType() }
     }
 
     Connections {
         target:             QGroundControl.settingsManager.flightMapSettings.mapProvider
-        onRawValueChanged:  updateActiveMapType()
+        function onRawValueChanged() { updateActiveMapType() }
     }
 
     /// Ground Station location

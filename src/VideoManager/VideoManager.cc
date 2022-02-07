@@ -13,6 +13,7 @@
 #include <QSettings>
 #include <QUrl>
 #include <QDir>
+#include <QQuickWindow>
 
 #ifndef QGC_DISABLE_UVC
 #include <QCameraInfo>
@@ -569,7 +570,7 @@ void
 VideoManager::_initVideo()
 {
 #if defined(QGC_GST_STREAMING)
-    QQuickItem* root = qgcApp()->mainRootWindow();
+    QQuickWindow* root = qgcApp()->mainRootWindow();
 
     if (root == nullptr) {
         qCDebug(VideoManagerLog) << "mainRootWindow() failed. No root window";
@@ -640,7 +641,11 @@ VideoManager::_updateSettings(unsigned id)
                         }
                         break;
                     case VIDEO_STREAM_TYPE_RTPUDP:
-                        if ((settingsChanged |= _updateVideoUri(id, QStringLiteral("udp://0.0.0.0:%1").arg(pInfo->uri())))) {
+                        if ((settingsChanged |= _updateVideoUri(
+                                        id,
+                                        pInfo->uri().contains("udp://")
+                                            ? pInfo->uri() // Specced case
+                                            : QStringLiteral("udp://0.0.0.0:%1").arg(pInfo->uri())))) {
                             _toolbox->settingsManager()->videoSettings()->videoSource()->setRawValue(VideoSettings::videoSourceUDPH264);
                         }
                         break;

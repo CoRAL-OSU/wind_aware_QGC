@@ -25,10 +25,7 @@ QGCPopupDialog {
 
     property var paramController
 
-    function accept() {
-        hideDialog()
-        paramController.sendDiff();
-    }
+    onAccepted: paramController.sendDiff()
 
     Component.onDestruction: paramController.clearDiff();
 

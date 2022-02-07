@@ -11,6 +11,7 @@ add_library(Joystick
 	Joystick.cc
 	JoystickManager.cc
 	JoystickSDL.cc
+	JoystickMavCommand.cc
 	${EXTRA_SRC}
 )
 
@@ -28,7 +29,7 @@ if(WIN32)
 	target_link_libraries(Joystick PUBLIC sdl2)
 else()
 	find_package(SDL2 REQUIRED)
-	if (IS_DIRECTORY ${SDL2_INCLUDE_DIRS})
+	if (IS_DIRECTORY "${SDL2_INCLUDE_DIRS}")
 		include_directories(${SDL2_INCLUDE_DIRS})
 		string(STRIP "${SDL2_LIBRARIES}" SDL2_LIBRARIES)
 		target_link_libraries(Joystick PRIVATE ${SDL2_LIBRARIES})

@@ -60,6 +60,7 @@ static QMap<int, QString> px4_board_name_map {
     {52, "px4_fmu-v6_default"},
     {53, "px4_fmu-v6x_default"},
     {54, "px4_fmu-v6u_default"},
+    {55, "sky-drones_smartap-airlink_default"},
     {88, "airmind_mindpx-v2_default"},
     {12, "bitcraze_crazyflie_default"},
     {14, "bitcraze_crazyflie21_default"},
@@ -246,7 +247,7 @@ void FirmwareUpgradeController::_foundBoard(bool firstAttempt, const QSerialPort
             // Radio always flashes latest firmware, so we can start right away without
             // any further user input.
             _startFlashWhenBootloaderFound = true;
-            _startFlashWhenBootloaderFoundFirmwareIdentity = FirmwareIdentifier(ThreeDRRadio,
+            _startFlashWhenBootloaderFoundFirmwareIdentity = FirmwareIdentifier(SiKRadio,
                                                                                 StableFirmware,
                                                                                 DefaultVehicleFirmware);
         }
@@ -310,18 +311,9 @@ void FirmwareUpgradeController::_initFirmwareHash()
     #endif
     };
 
-    /////////////////////////////// 3dr radio firmwares ///////////////////////////////////////
-    FirmwareToUrlElement_t rg3DRRadioFirmwareArray[] = {
-        { ThreeDRRadio, StableFirmware, DefaultVehicleFirmware, "http://px4-travis.s3.amazonaws.com/SiK/stable/radio~hm_trp.ihx"}
-    };
-
     // We build the maps for PX4 firmwares dynamically using the data below
     for (auto& element : rgPX4FLowFirmwareArray) {
         _rgPX4FLowFirmware.insert(FirmwareIdentifier(element.stackType, element.firmwareType, element.vehicleType), element.url);
-    }
-
-    for (auto& element : rg3DRRadioFirmwareArray) {
-        _rg3DRRadioFirmware.insert(FirmwareIdentifier(element.stackType, element.firmwareType, element.vehicleType), element.url);
     }
 }
 
@@ -340,8 +332,17 @@ QHash<FirmwareUpgradeController::FirmwareIdentifier, QString>* FirmwareUpgradeCo
     case Bootloader::boardIDPX4Flow:
         _rgFirmwareDynamic = _rgPX4FLowFirmware;
         break;
-    case Bootloader::boardID3DRRadio:
-        _rgFirmwareDynamic = _rg3DRRadioFirmware;
+    case Bootloader::boardIDSiKRadio1000:
+    {
+        FirmwareToUrlElement_t element = { SiKRadio, StableFirmware, DefaultVehicleFirmware, "http://px4-travis.s3.amazonaws.com/SiK/stable/radio~hm_trp.ihx" };
+        _rgFirmwareDynamic.insert(FirmwareIdentifier(element.stackType, element.firmwareType, element.vehicleType), element.url);
+    }
+        break;
+    case Bootloader::boardIDSiKRadio1060:
+    {
+        FirmwareToUrlElement_t element = { SiKRadio, StableFirmware, DefaultVehicleFirmware, "https://px4-travis.s3.amazonaws.com/SiK/stable/radio~hb1060.ihx" };
+        _rgFirmwareDynamic.insert(FirmwareIdentifier(element.stackType, element.firmwareType, element.vehicleType), element.url);
+    }
         break;
     default:
         if (px4_board_name_map.contains(boardId)) {
