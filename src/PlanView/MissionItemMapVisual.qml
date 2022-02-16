@@ -24,12 +24,13 @@ Item {
     property var map        ///< Map control to place item in
     property var vehicle    ///< Vehicle associated with this item
     property var interactive: true    ///< Vehicle associated with this item
-
     signal clicked(int sequenceNumber)
 
     property var _visualItem
 
     Component.onCompleted: {
+        console.log("Adding waypoint!")
+
         if (object.mapVisualQML) {
             var component = Qt.createComponent(object.mapVisualQML)
             if (component.status === Component.Error) {

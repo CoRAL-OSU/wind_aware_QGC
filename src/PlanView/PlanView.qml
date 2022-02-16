@@ -429,6 +429,26 @@ Item {
                 }
             }
 
+            // Testing adding preview items to the Map
+            Repeater {
+                model: _planMasterController.windAwarePlanner.plannedItems
+                delegate: MissionItemMapVisual {
+                    map:        editorMap
+                    opacity:    _editingLayer == _layerMission ? 1 : editorMap._nonInteractiveOpacity
+                    onClicked:   _missionController.setCurrentPlanViewSeqNum(0, false)
+                    interactive: _editingLayer == _layerMission
+                    vehicle:    _planMasterController.controllerVehicle
+                }
+            }
+
+            // Add lines to planned path
+            MissionLineView {
+                showSpecialVisual: false
+                model:          _planMasterController.windAwarePlanner.simplePlannedFlightPathSegments
+                opacity:        _editingLayer == _layerMission ? 1 : editorMap._nonInteractiveOpacity
+                color:          QGroundControl.globalPalette.colorBlue
+            }
+
             // Add lines between waypoints
             MissionLineView {
                 showSpecialVisual:  _missionController.isROIBeginCurrentItem
@@ -574,7 +594,7 @@ Item {
                 id:             windAcceptButton
                 anchors.left:   parent.left
                 anchors.bottom:    parent.bottom
-                width:          parent.width/2
+                width:          parent.width/3
                 height:         parent.height/2
                 text:           "Accept"
                 onClicked:      _planMasterController.windAwarePlanner.newTrajectoryResponse(true)//do something?
@@ -583,11 +603,22 @@ Item {
             Button {
                 id:             windRejectButton
                 anchors.left:   windAcceptButton.right
-                anchors.right:  parent.right
-                anchors.bottom:    parent.bottom
+                anchors.bottom: parent.bottom
                 height:         parent.height/2
+                width:          parent.width/3
                 text:           "Reject"
                 onClicked:      _planMasterController.windAwarePlanner.newTrajectoryResponse(false)
+            }
+            Button {
+                id:             windCalculateButton
+                anchors.left:   windRejectButton.right
+                anchors.right:  parent.right
+                anchors.bottom: parent.bottom
+                height:         parent.height/2
+                //width:          parent.width/3;
+                text:           "Recalc"
+                onClicked:      _planMasterController.windAwarePlanner.recalculateTrajectory()
+
             }
         }
 
