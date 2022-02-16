@@ -115,9 +115,18 @@ void WindAwareMissionPlanner::recalculateTrajectory() {
     insertSimplePlannedMissionItem(oldTakeoff->coordinate(), itemIndex++, false);
 
     if(currentItems->count() > 4) {
-        VisualMissionItem* midPoint = qobject_cast<VisualMissionItem*>(currentItems->get(currentItems->count()/2));
-        insertSimplePlannedMissionItem(midPoint->coordinate(), itemIndex++, false);
+        int numWaypoints = currentItems->count() - 3; // Exclude settings (0) takeoff(1) and last waypoint (currentItems->count(0 - 1)
+        int ratio = 2;
+
+        int numIntermediatePoints = floor(numWaypoints / ratio);
+
+        for(int i = 1; i <= numIntermediatePoints; i++) {
+            VisualMissionItem* intermediatePoint = qobject_cast<VisualMissionItem*>(currentItems->get(i * ratio));
+            insertSimplePlannedMissionItem(intermediatePoint->coordinate(), itemIndex++, false);
+        }
+
     }
+
 
     insertSimplePlannedMissionItem(newEndPoint->coordinate(), itemIndex++, false);
     emit plannedItemsChanged();

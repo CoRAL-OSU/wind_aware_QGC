@@ -580,6 +580,30 @@ Item {
             width:              _rightPanelWidth;
             height:             width/2;
             color:              qgcPal.window;
+            property bool showPlannedTrajectory: false
+
+            function displayWind(response) {
+                if(response) {
+                    _planMasterController.windAwarePlanner.recalculateTrajectory()
+
+                    showPlannedTrajectory = true
+                }
+                else {
+                    _planMasterController.windAwarePlanner.newTrajectoryResponse(false)
+                    showPlannedTrajectory = false
+                    visible = false
+                }
+
+            }
+
+            function acceptNewTrajectory(response) {
+                if(response){
+                    _planMasterController.windAwarePlanner.newTrajectoryResponse(true)
+                } else {
+                    _planMasterController.windAwarePlanner.newTrajectoryResponse(false)
+                }
+                visible = false
+            }
 
             QGCLabel {
                 id:             windRecommendLabel;
@@ -591,34 +615,46 @@ Item {
                 anchors.top:    parent.top
             }
             Button {
+                id:             windDisplayButton
+                anchors.left:   parent.left
+                anchors.bottom: parent.bottom
+                height:         parent.height/2
+                width:          parent.width/3
+                text:           "Display"
+                visible:        !parent.showPlannedTrajectory
+                onClicked:      parent.displayWind(true)
+            }
+            Button {
+                id:             windIgnoreButton
+                anchors.right:  parent.right
+                anchors.bottom: parent.bottom
+                height:         parent.height/2
+                width:          parent.width/3
+                text:           "Ignore"
+                visible:        !parent.showPlannedTrajectory
+                onClicked:      parent.displayWind(false)
+            }
+
+            Button {
                 id:             windAcceptButton
                 anchors.left:   parent.left
                 anchors.bottom:    parent.bottom
                 width:          parent.width/3
                 height:         parent.height/2
                 text:           "Accept"
-                onClicked:      _planMasterController.windAwarePlanner.newTrajectoryResponse(true)//do something?
+                visible:        parent.showPlannedTrajectory
+                onClicked:      _planMasterController.windAwarePlanner.newTrajectoryResponse(true)
             }
 
             Button {
                 id:             windRejectButton
-                anchors.left:   windAcceptButton.right
+                anchors.right:  parent.right
                 anchors.bottom: parent.bottom
                 height:         parent.height/2
                 width:          parent.width/3
                 text:           "Reject"
+                visible:        parent.showPlannedTrajectory
                 onClicked:      _planMasterController.windAwarePlanner.newTrajectoryResponse(false)
-            }
-            Button {
-                id:             windCalculateButton
-                anchors.left:   windRejectButton.right
-                anchors.right:  parent.right
-                anchors.bottom: parent.bottom
-                height:         parent.height/2
-                //width:          parent.width/3;
-                text:           "Recalc"
-                onClicked:      _planMasterController.windAwarePlanner.recalculateTrajectory()
-
             }
         }
 
