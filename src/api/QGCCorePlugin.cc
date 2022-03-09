@@ -199,6 +199,8 @@ QVariantList& QGCCorePlugin::analyzePages()
         _p->analyzeList.append(QVariant::fromValue(new QmlComponentInfo(tr("MAVLink Inspector"),QUrl::fromUserInput("qrc:/qml/MAVLinkInspectorPage.qml"),   QUrl::fromUserInput("qrc:/qmlimages/MAVLinkInspector"))));
 #endif
         _p->analyzeList.append(QVariant::fromValue(new QmlComponentInfo(tr("Vibration"),        QUrl::fromUserInput("qrc:/qml/VibrationPage.qml"),          QUrl::fromUserInput("qrc:/qmlimages/VibrationPageIcon"))));
+
+        _p->analyzeList.append(QVariant::fromValue(new QmlComponentInfo(tr("Risk Margin"),      QUrl::fromUserInput("qrc:/qml/QGCWindRiskMarginPage.qml"),  QUrl::fromUserInput("qrc:/qmlimages/WindRiskMarginIcon"))));
     }
     return _p->analyzeList;
 }

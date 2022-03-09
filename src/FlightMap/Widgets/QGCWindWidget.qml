@@ -39,17 +39,17 @@ Item {
         anchors.right:  planarHeadingArea.left
         anchors.left:   parent.left
         anchors.top:    parent.top
-        anchors.margins: 3
+        anchors.leftMargin: 3
         height:         planarHeadingArea.height
-
 
         QGCLabel {
             id:                 windLabel
-            anchors.fill:       parent
-            text:               "Wind (m/s)"
-            wrapMode:           Text.WordWrap
+            anchors.left:   parent.left
+            anchors.right:  parent.right
+            anchors.verticalCenter: parent.verticalCenter
+            text:               "Wind m/s"
+            wrapMode:           Text.WrapAnywhere
             horizontalAlignment:    Text.AlignHCenter
-
         }
     }
 
@@ -91,6 +91,14 @@ Item {
                 }
             }
 
+            QGCWindDial {
+                id:             planarHeadingArrow
+                anchors.fill:   planarHeadingDial
+                arrowLength:    (_windSpeedPlanar >= 0.5) ? planarHeadingDial.width / 3 : 0
+                arrowAngle:     _windHeadingRad
+                arrowLineWidth: 5
+            }
+
             // Aircraft heading indicator
             Image {
                 id:                 planarHeadingPointer
@@ -105,15 +113,10 @@ Item {
                     origin.y:       planarHeadingPointer.height / 2
                     angle:          vehicle ? vehicle.heading.rawValue : 0
                 }
+
             }
 
-            QGCWindDial {
-                id:             planarHeadingArrow
-                anchors.fill:   planarHeadingDial
-                arrowLength:    (_windSpeedPlanar >= 0.5) ? planarHeadingDial.width / 3 : 0
-                arrowAngle:     _windHeadingRad
-                arrowLineWidth: 5
-            }
+
         }
 
         // Heading mag box
@@ -226,7 +229,7 @@ Item {
             anchors.horizontalCenter:   parent.horizontalCenter
             anchors.top:                upLabelBox.bottom
             anchors.bottom:             downLabelBox.top
-            width:                      planarMagnitudeArea.height
+            width:                      planarMagnitudeArea.height  + verticalGradientArea.anchors.margins
             anchors.margins:            5
             color:                      qgcPal.window
             border.color:               qgcPal.text

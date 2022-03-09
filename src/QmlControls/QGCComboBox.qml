@@ -7,11 +7,11 @@
  *
  ****************************************************************************/
 
-import QtQuick                  2.11
+import QtQuick                  2.14
 import QtQuick.Window           2.3
-import QtQuick.Controls         2.4
-import QtQuick.Controls.impl    2.4
-import QtQuick.Templates        2.4 as T
+import QtQuick.Controls         2.14
+import QtQuick.Controls.impl    2.14
+import QtQuick.Templates        2.14 as T
 
 import QGroundControl.ScreenTools   1.0
 import QGroundControl.Palette       1.0
