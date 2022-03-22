@@ -31,18 +31,24 @@ public:
     int count = 0;
     int itemIndex = 0;
 
+    // Makes function accessible inside QML
     Q_INVOKABLE void newTrajectoryResponse(bool response);
     Q_INVOKABLE void recalculateTrajectory(void);
 
-    Q_PROPERTY(QmlObjectListModel* plannedItems READ plannedItems NOTIFY plannedItemsChanged)
-    Q_PROPERTY(QmlObjectListModel* simplePlannedFlightPathSegments READ simplePlannedFlightPathSegments NOTIFY plannedFlightSegmentsChanged)
+    // Makes variable accessible inside QML as a property
+    Q_PROPERTY(QmlObjectListModel* plannedItems                     READ plannedItems                       NOTIFY plannedItemsChanged)
+    Q_PROPERTY(QmlObjectListModel* simplePlannedFlightPathSegments  READ simplePlannedFlightPathSegments    NOTIFY plannedFlightSegmentsChanged)
+    Q_PROPERTY(QmlObjectListModel* windBufferPolygons               READ windBufferPolygons                 CONSTANT)
 
+    // Accessor for private variable
     QmlObjectListModel* plannedItems                        (void) {return _plannedVisualitems; }
     QmlObjectListModel* simplePlannedFlightPathSegments     (void) {return &_flightPathSegments; }
+    QmlObjectListModel* windBufferPolygons                  (void) {return &_windBufferPolygons; }
 
 signals:
     void plannedItemsChanged                (void);
     void plannedFlightSegmentsChanged       (void);
+    void riskManagementSettingsChanged      (void);
 
 public slots:
     void updateTrajectoryRecommendation();
@@ -51,8 +57,11 @@ private:
     PlanMasterController*   _masterController;
     QmlObjectListModel*     _plannedVisualitems;
     QmlObjectListModel      _flightPathSegments;
-    FlightPathSegment* _createFlightPathSegment(VisualItemPair& itemPair, bool mavlinkTerrainFrame);
+    QmlObjectListModel      _windBufferPolygons;
 
+    FlightPathSegment* _createFlightPathSegment(VisualItemPair& itemPair, bool mavlinkTerrainFrame);
+    void                    _regenerateBufferPolygons();
+    void                    _GeneratePolygonWindBuffer();
 
 };
 

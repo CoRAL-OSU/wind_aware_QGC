@@ -23,6 +23,10 @@ AnalyzePage {
         QGCLabel {
             text:       qsTr("Risk margin information")
         }
+
+        // Set buffer radius
+        // Set buffer colors
+        // Enable display of buffer
     }
 
 }

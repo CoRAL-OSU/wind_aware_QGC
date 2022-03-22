@@ -449,6 +449,20 @@ Item {
                 color:          QGroundControl.globalPalette.colorBlue
             }
 
+            Instantiator {
+                model: _planMasterController.windAwarePlanner.windBufferPolygons
+
+                delegate : QGCMapPolygonVisuals {
+                    parent:             _root
+                    mapControl:         editorMap
+                    mapPolygon:         object
+                    borderWidth:        3
+                    borderColor:        "red"
+                    interiorColor:      "orange"
+                    interiorOpacity:    0.2 * opacity
+                    interactive:        false
+                }
+            }
             // Add lines between waypoints
             MissionLineView {
                 showSpecialVisual:  _missionController.isROIBeginCurrentItem
