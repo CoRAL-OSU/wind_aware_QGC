@@ -429,7 +429,7 @@ Item {
                 }
             }
 
-            // Testing adding preview items to the Map
+            // Add planned points (wind optimal trajectory)
             Repeater {
                 model: _planMasterController.windAwarePlanner.plannedItems
                 delegate: MissionItemMapVisual {
@@ -441,7 +441,7 @@ Item {
                 }
             }
 
-            // Add lines to planned path
+            // Add lines to planned path (wind optimal trajectory)
             MissionLineView {
                 showSpecialVisual: false
                 model:          _planMasterController.windAwarePlanner.simplePlannedFlightPathSegments
@@ -449,6 +449,7 @@ Item {
                 color:          QGroundControl.globalPalette.colorBlue
             }
 
+            // Attempt to show wind geofence buffer
             Instantiator {
                 model: _planMasterController.windAwarePlanner.windBufferPolygons
 
@@ -598,12 +599,12 @@ Item {
 
             function displayWind(response) {
                 if(response) {
-                    _planMasterController.windAwarePlanner.recalculateTrajectory()
+                    _planMasterController.windAwarePlanner.generateOptimalTrajectory()
 
                     showPlannedTrajectory = true
                 }
                 else {
-                    _planMasterController.windAwarePlanner.newTrajectoryResponse(false)
+                    _planMasterController.windAwarePlanner.approveOptimalTrajectory(false)
                     showPlannedTrajectory = false
                     visible = false
                 }
@@ -612,9 +613,9 @@ Item {
 
             function acceptNewTrajectory(response) {
                 if(response){
-                    _planMasterController.windAwarePlanner.newTrajectoryResponse(true)
+                    _planMasterController.windAwarePlanner.approveOptimalTrajectory(true)
                 } else {
-                    _planMasterController.windAwarePlanner.newTrajectoryResponse(false)
+                    _planMasterController.windAwarePlanner.approveOptimalTrajectory(false)
                 }
                 visible = false
             }
@@ -657,7 +658,7 @@ Item {
                 height:         parent.height/2
                 text:           "Accept"
                 visible:        parent.showPlannedTrajectory
-                onClicked:      _planMasterController.windAwarePlanner.newTrajectoryResponse(true)
+                onClicked:      _planMasterController.windAwarePlanner.approveOptimalTrajectory(true)
             }
 
             Button {
@@ -668,7 +669,7 @@ Item {
                 width:          parent.width/3
                 text:           "Reject"
                 visible:        parent.showPlannedTrajectory
-                onClicked:      _planMasterController.windAwarePlanner.newTrajectoryResponse(false)
+                onClicked:      _planMasterController.windAwarePlanner.approveOptimalTrajectory(false)
             }
         }
 

@@ -10,32 +10,16 @@ class WindAwareMissionPlanner : public QObject
 {
     Q_OBJECT
 
-
-
-
 public:
     WindAwareMissionPlanner(PlanMasterController* masterController, QObject* parent = nullptr);
 
-    // Replace existing mission with new items
-    void replaceMissionItems();
+    // New trajectory generation and updating. Accessible from QML.
+    Q_INVOKABLE void approveOptimalTrajectory(bool approve);
+    Q_INVOKABLE void generateOptimalTrajectory(void);
+    Q_INVOKABLE void generateWindBuffer(void);
 
-    QmlObjectListModel* plannedVisualItems (void) {return _plannedVisualitems; }
-    VisualMissionItem* insertSimplePlannedMissionItem(QGeoCoordinate coordinate, int visualItemIndex, bool makeCurrentItem);
-    VisualMissionItem* _insertSimplePlannedMissionItemWorker(QGeoCoordinate coordinate, MAV_CMD command, int visualItemIndex, bool makeCurrentItem);
-    void               insertMissionItem(MissionItem item);
-    void updateTrajectory(void);
-    void printCurrentItems();
-    void recalculateFlightSegments();
 
-    void _initPlannedVisualItem(VisualMissionItem* visualItem);
-    int count = 0;
-    int itemIndex = 0;
-
-    // Makes function accessible inside QML
-    Q_INVOKABLE void newTrajectoryResponse(bool response);
-    Q_INVOKABLE void recalculateTrajectory(void);
-
-    // Makes variable accessible inside QML as a property
+    // Properties needed by QML
     Q_PROPERTY(QmlObjectListModel* plannedItems                     READ plannedItems                       NOTIFY plannedItemsChanged)
     Q_PROPERTY(QmlObjectListModel* simplePlannedFlightPathSegments  READ simplePlannedFlightPathSegments    NOTIFY plannedFlightSegmentsChanged)
     Q_PROPERTY(QmlObjectListModel* windBufferPolygons               READ windBufferPolygons                 CONSTANT)
@@ -51,7 +35,7 @@ signals:
     void riskManagementSettingsChanged      (void);
 
 public slots:
-    void updateTrajectoryRecommendation();
+    void generateWindBuffer_slot(void);
 
 private:
     PlanMasterController*   _masterController;
@@ -59,9 +43,16 @@ private:
     QmlObjectListModel      _flightPathSegments;
     QmlObjectListModel      _windBufferPolygons;
 
-    FlightPathSegment* _createFlightPathSegment(VisualItemPair& itemPair, bool mavlinkTerrainFrame);
-    void                    _regenerateBufferPolygons();
-    void                    _GeneratePolygonWindBuffer();
+    // Wind risk buffer generation, display
+    void                _computeWindBufferPolygons(void);
+    void                _constructGeoFencePolygon(QGCFencePolygon* newPoly, QList<QGeoCoordinate> vertexList);
+
+    // New trajectory insertion and preview generation
+    void                _regenerateFlightSegments(void);
+    void                _insertOptimalTrajectory(void);
+    void                _printCurrentItems(void);
+    FlightPathSegment*  _createFlightPathSegment(VisualItemPair& itemPair, bool mavlinkTerrainFrame);
+    VisualMissionItem*  _insertSimplePlannedMissionItem(QGeoCoordinate coordinate, int visualItemIndex, bool makeCurrentItem);
 
 };
 
