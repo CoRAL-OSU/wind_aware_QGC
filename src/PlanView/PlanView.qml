@@ -449,7 +449,7 @@ Item {
                 color:          QGroundControl.globalPalette.colorBlue
             }
 
-            // Attempt to show wind geofence buffer
+            // Show wind geofence buffer
             Instantiator {
                 model: _planMasterController.windAwarePlanner.windBufferPolygons
 
@@ -459,7 +459,7 @@ Item {
                     mapPolygon:         object
                     borderWidth:        3
                     borderColor:        "red"
-                    interiorColor:      "orange"
+                    interiorColor:      (index === 0) ? "orange" : "red"
                     interiorOpacity:    0.2 * opacity
                     interactive:        false
                 }

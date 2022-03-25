@@ -3,6 +3,10 @@
 
 #include "QGCCorePlugin.h"
 #include "MissionController.h"
+#include "boost/geometry.hpp"
+#include "boost/geometry/geometries/point_xy.hpp"
+#include "boost/geometry/geometries/geometries.hpp"
+#include "boost/geometry/algorithms/buffer.hpp"
 
 class PlanMasterController;
 
@@ -11,6 +15,9 @@ class WindAwareMissionPlanner : public QObject
     Q_OBJECT
 
 public:
+    typedef double coordinate_type;
+    typedef boost::geometry::model::d2::point_xy<coordinate_type> point;
+    typedef boost::geometry::model::polygon<point> polygon;
     WindAwareMissionPlanner(PlanMasterController* masterController, QObject* parent = nullptr);
 
     // New trajectory generation and updating. Accessible from QML.
@@ -38,6 +45,8 @@ public slots:
     void generateWindBuffer_slot(void);
 
 private:
+
+
     PlanMasterController*   _masterController;
     QmlObjectListModel*     _plannedVisualitems;
     QmlObjectListModel      _flightPathSegments;
@@ -45,6 +54,8 @@ private:
 
     // Wind risk buffer generation, display
     void                _computeWindBufferPolygons(void);
+    WindAwareMissionPlanner::polygon             _generateInnerBufferPolygon(QList<WindAwareMissionPlanner::point> trajectoryCoords_Cartesian);
+    WindAwareMissionPlanner::polygon             _generateOuterBufferPolygon(WindAwareMissionPlanner::polygon innerPolygon);
     void                _constructGeoFencePolygon(QGCFencePolygon* newPoly, QList<QGeoCoordinate> vertexList);
 
     // New trajectory insertion and preview generation
