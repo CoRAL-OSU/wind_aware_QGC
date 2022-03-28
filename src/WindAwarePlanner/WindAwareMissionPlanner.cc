@@ -53,6 +53,7 @@ WindAwareMissionPlanner::WindAwareMissionPlanner(PlanMasterController* masterCon
 {
     // Connect WindBuffer generation to misioncontroller's update
     connect(this->_masterController->missionController()->visualItems(), &QmlObjectListModel::dirtyChanged, this, &WindAwareMissionPlanner::generateWindBuffer_slot);
+    connect(this->_masterController->missionController()->visualItems(), &QmlObjectListModel::countChanged, this, &WindAwareMissionPlanner::generateWindBuffer_slot);
     connect(this, &WindAwareMissionPlanner::bufferPropertiesChanged, this, &WindAwareMissionPlanner::generateWindBuffer_slot);
 }
 
