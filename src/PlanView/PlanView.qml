@@ -459,7 +459,7 @@ Item {
                     mapPolygon:         object
                     borderWidth:        3
                     borderColor:        "red"
-                    interiorColor:      (index === 0) ? "orange" : "red"
+                    interiorColor:      (index === 0) ? _planMasterController.windAwarePlanner.innerBufferColor : _planMasterController.windAwarePlanner.outerBufferColor
                     interiorOpacity:    0.2 * opacity
                     interactive:        false
                 }
