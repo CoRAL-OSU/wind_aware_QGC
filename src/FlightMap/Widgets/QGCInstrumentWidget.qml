@@ -97,7 +97,7 @@ ColumnLayout {
 
             model: [
                 {value: windWidget, text: qsTr("Gradient") },
-                {value: testRect, text: qsTr("3D Compass") }
+                {value: compass_2d, text: qsTr("2D Compass") }
             ]
         }
 
@@ -108,7 +108,7 @@ ColumnLayout {
             anchors.bottom: parent.bottom
             anchors.top:    windDisplayComboBox.bottom
 
-            QGCWindWidget {
+            QGCPlanarWindDisplay {
                 id:                     compass_2d
                 anchors.fill:           parent
                 visible:                windInstrument.selectedDisplayType === this

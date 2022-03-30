@@ -284,6 +284,7 @@
         <file alias="QGroundControl/FlightMap/QGCWindDial.qml">src/FlightMap/Widgets/QGCWindDial.qml</file>
         <file alias="QGroundControl/FlightMap/QGCWindWidget.qml">src/FlightMap/Widgets/QGCWindWidget.qml</file>
         <file alias="QGCWindRiskMarginPage.qml">src/AnalyzeView/QGCWindRiskMarginPage.qml</file>
+        <file alias="QGroundControl/FlightMap/QGCPlanarWindDisplay.qml">src/FlightMap/Widgets/QGCPlanarWindDisplay.qml</file>
     </qresource>
     <qresource prefix="/FirstRunPromptDialogs">
         <file alias="UnitsFirstRunPrompt.qml">src/FirstRunPromptDialogs/UnitsFirstRunPrompt.qml</file>
