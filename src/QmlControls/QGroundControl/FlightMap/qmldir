@@ -17,6 +17,8 @@ QGCAttitudeHUD              1.0 QGCAttitudeHUD.qml
 QGCAttitudeWidget           1.0 QGCAttitudeWidget.qml
 QGCWindDial                 1.0 QGCWindDial.qml
 QGCWindWidget               1.0 QGCWindWidget.qml
+QGCPlanarComponentWindDisplay 1.0 QGCPlanarComponentWindDisplay.qml
+QGCVerticalWindDisplay      1.0 QGCVerticalWindDisplay.qml
 QGCPlanarWindDisplay        1.0 QGCPlanarWindDisplay.qml
 QGCCompassWidget            1.0 QGCCompassWidget.qml
 QGCPitchIndicator           1.0 QGCPitchIndicator.qml

@@ -14,6 +14,7 @@ import QtLocation       5.3
 import QtPositioning    5.3
 import QtQuick.Layouts  1.2
 import QtQuick.Window   2.2
+import QtGraphicalEffects 1.12
 
 import QGroundControl                   1.0
 import QGroundControl.FlightMap         1.0
@@ -449,21 +450,38 @@ Item {
                 color:          QGroundControl.globalPalette.colorBlue
             }
 
-            // Show wind geofence buffer
-            Instantiator {
-                model: _planMasterController.windAwarePlanner.windBufferPolygons
 
-                delegate : QGCMapPolygonVisuals {
-                    parent:             _root
-                    mapControl:         editorMap
-                    mapPolygon:         object
-                    borderWidth:        3
-                    borderColor:        "red"
-                    interiorColor:      (index === 0) ? _planMasterController.windAwarePlanner.innerBufferColor : _planMasterController.windAwarePlanner.outerBufferColor
-                    interiorOpacity:    0.2 * opacity
-                    interactive:        false
+            Instantiator {
+                model: _planMasterController.windAwarePlanner.innerWindBufferPolygon
+
+                delegate: QGCMapPolygonWithHolesVisuals {
+                    parent:                 _root
+                    map_control:            editorMap
+                    map_polygon:            object
+                    border_width:           0
+                    border_color:           "orange"
+                    interior_color:         _planMasterController.windAwarePlanner.innerBufferColor
+                    interior_opacity:       0.2 * opacity
+                    interactive:            false
+                }
+
+            }
+
+            Instantiator {
+                model: _planMasterController.windAwarePlanner.outerWindBufferPolygon
+
+                delegate: QGCMapPolygonWithHolesVisuals {
+                    parent:                 _root
+                    map_control:            editorMap
+                    map_polygon:            object
+                    border_width:           0
+                    border_color:           "red"
+                    interior_color:         _planMasterController.windAwarePlanner.outerBufferColor
+                    interior_opacity:       0.2 * opacity
+                    interactive:            false
                 }
             }
+
             // Add lines between waypoints
             MissionLineView {
                 showSpecialVisual:  _missionController.isROIBeginCurrentItem

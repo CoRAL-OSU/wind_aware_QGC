@@ -28,12 +28,16 @@ Item {
     property real _verticalMaxSpeed:    5.0
     property real _planarMaxSpeed:      15.0
     property color  _windPointerColor:  Qt.rgba(1, 0, 0, 1)
+    property color  _gradientBarColor:  Qt.rgba(0, 0, 1, 1)
+    property color _gradientBarOutlineColor: Qt.rgba(1, 1, 1, 1)
     property real _radius:              planarHeadingDial.radius
+
     on_WindSpeedChanged: { // Updates compass and gradients when new wind velocities arrive.
         planarHeadingArrow.draw();
         planarGradientCanvas.requestPaint();
         verticalGradientCanvas.requestPaint();
     }
+
     Item {
         id:             instrumentLabel
         anchors.right:  planarHeadingArea.left
@@ -164,9 +168,9 @@ Item {
 
             function updateSlider(context, sliderPosition) {
                 context.lineWidth = 5;
-                context.strokeStyle = "black"
+                context.strokeStyle = _gradientBarColor
                 context.lineCap = "square"
-                context.fillStyle = "black"
+                context.fillStyle = _gradientBarOutlineColor
                 context.beginPath();
                 context.moveTo(sliderPosition, 0);
                 context.lineTo(sliderPosition, height);
@@ -244,9 +248,9 @@ Item {
 
                 function updateSlider(context, sliderPosition) {
                     context.lineWidth = 5;
-                    context.strokeStyle = "black"
+                    context.strokeStyle = _gradientBarColor
                     context.lineCap = "square"
-                    context.fillStyle = "black"
+                    context.fillStyle = _gradientBarOutlineColor
                     context.beginPath();
                     context.moveTo(0, height /2 - sliderPosition);
                     context.lineTo(width, height/2 - sliderPosition);

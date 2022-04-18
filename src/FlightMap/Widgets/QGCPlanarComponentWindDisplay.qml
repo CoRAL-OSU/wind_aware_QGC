@@ -14,7 +14,6 @@ import QGroundControl.ScreenTools   1.0
 import QGroundControl.Palette       1.0
 import QGroundControl.Controllers   1.0
 import QGroundControl.Vehicle      1.0
-
 Item {
     id: root
     property var  vehicle:              null
@@ -26,13 +25,17 @@ Item {
     property real _windSpeedEast:       vehicle ? _windSpeed * Math.sin(_windHeadingRad) : 0
     property real _windSpeedPlanar:     vehicle ? Math.sqrt(Math.pow(_windSpeedNorth, 2) + Math.pow(_windSpeedEast,2)) : 0 // Planar refers to NE wind, with no D component
     property real _verticalMaxSpeed:    5.0
+    property color eastArrowColor:      Qt.rgba(1, 0, 0, 1)
+    property color northArrowColor:     Qt.rgba(0, 1, 0, 1)
     property real _planarMaxSpeed:      15.0
     property color  _windPointerColor:  Qt.rgba(1, 0, 0, 1)
     property real _radius:              planarHeadingDial.radius
     on_WindSpeedChanged: { // Updates compass and gradients when new wind velocities arrive.
         planarHeadingArrow.draw();
-        verticalWindSpeedIndicator.draw()
+        planarGradientCanvas.requestPaint();
     }
+
+
     Rectangle {
         id:                 instrumentLabel
         anchors.top:        parent.top
@@ -147,10 +150,20 @@ Item {
             }
 
             QGCWindDial {
-                id:             planarHeadingArrow
+                id:             eastHeadingArrow
                 anchors.fill:   planarHeadingDial
-                arrowLength:    _windSpeedPlanar * (width / (2*_planarMaxSpeed))
-                arrowAngle:     _windHeadingRad
+                arrowLength:    _windSpeedEast * (width / (2*_planarMaxSpeed))
+                arrowAngle:     (_windSpeedEast > 0) ? Math.PI / 2 : (3 * Math.Pi / 2)
+                arrowColor:     eastArrowColor
+                arrowLineWidth: 5
+            }
+
+            QGCWindDial {
+                id:             northHeadingArrow
+                anchors.fill:   planarHeadingDial
+                arrowLength:    _windSpeedNorth * (width / (2*_planarMaxSpeed))
+                arrowAngle:     (_windSpeedNorth > 0) ? 0 : Math.Pi
+                arrowColor:     northArrowColor
                 arrowLineWidth: 5
             }
 

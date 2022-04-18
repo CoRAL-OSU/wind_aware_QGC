@@ -40,10 +40,11 @@
 #include "MissionController.h"
 #include "TakeoffMissionItem.h"
 #include <vector>
-//#include "boost/geometry.hpp"
-//#include "boost/geometry/geometries/point_xy.hpp"
-//#include "boost/geometry/geometries/geometries.hpp"
-//#include "boost/geometry/algorithms/buffer.hpp"
+#include <QGeoPolygon>
+#include "boost/geometry.hpp"
+#include "boost/geometry/geometries/point_xy.hpp"
+#include "boost/geometry/geometries/geometries.hpp"
+#include "boost/geometry/algorithms/buffer.hpp"
 
 // Construct planner with necessary references
 WindAwareMissionPlanner::WindAwareMissionPlanner(PlanMasterController* masterController, QObject* parent)
@@ -276,8 +277,20 @@ WindAwareMissionPlanner::polygon WindAwareMissionPlanner::_generateOuterBufferPo
     return outerMultiPoly.at(0);
 }
 
+PolygonObject::PolygonObject(QList<QGeoCoordinate> coordList) {
+    //polygon().setPath(coordList);
+    _polygon = new QGeoPolygon(coordList);
+    qDebug() << polygon();
+    qDebug() << polygon()->size();
+}
+PolygonObject::~PolygonObject() {
+    delete _polygon;
+}
+
 void WindAwareMissionPlanner::_computeWindBufferPolygons() {
 
+    innerBufferInteriorPolygons()->clearAndDeleteContents();
+    outerBufferInteriorPolygons()->clearAndDeleteContents();
     qDebug() << "Inner rad: " << _innerBufferRadius;
     qDebug() << "Outer rad: " << _outerBufferRadius;
 
@@ -285,6 +298,7 @@ void WindAwareMissionPlanner::_computeWindBufferPolygons() {
     QmlObjectListModel* currentItems = _masterController->missionController()->visualItems();
     QList<QGeoCoordinate> trajectoryCoords;
     QList<QGeoCoordinate> innerBufferCoords;
+    QList<QGeoCoordinate> innerInteriorBufferCoords;
     QList<point> trajectoryCartesian;
 
     WindAwareMissionPlanner::polygon innerPolygon;
@@ -302,7 +316,6 @@ void WindAwareMissionPlanner::_computeWindBufferPolygons() {
         convertGeoToNed(coord, ltpOrigin, &ltpX, &ltpY, &ltpZ);
         point newP = point(ltpX, ltpY);
         trajectoryCartesian.push_back(newP);
-        //ls.push_back(newP);
     }
 
     innerPolygon = _generateInnerBufferPolygon(trajectoryCartesian);
@@ -315,6 +328,25 @@ void WindAwareMissionPlanner::_computeWindBufferPolygons() {
         innerBufferCoords.push_back(newCoord);
     }
 
+    if(innerPolygon.inners().size() > 0) {
+        boost::geometry::correct(innerPolygon);
+        for(const auto& interiorRing : innerPolygon.inners()) {
+            //boost::geometry::correct(interiorRing);
+            boost::geometry::model::ring<WindAwareMissionPlanner::point> ring = interiorRing;
+            boost::geometry::correct(ring);
+
+            for(const auto& point : ring) {
+                QGeoCoordinate newCoord;
+                convertNedToGeo(point.x(), point.y(), 0.0, ltpOrigin, &newCoord);
+                innerInteriorBufferCoords.push_back(newCoord);
+            }
+            QGCFencePolygon* newInnerInnerBufferPoly = new QGCFencePolygon(true, _masterController->geoFenceController());
+            _constructGeoFencePolygon(newInnerInnerBufferPoly, innerInteriorBufferCoords);
+            innerBufferInteriorPolygons()->append(newInnerInnerBufferPoly);
+            innerInteriorBufferCoords.clear();
+        }
+    }
+
 
     QGCFencePolygon* newInnerBufferPoly = new QGCFencePolygon(true, _masterController->geoFenceController());
     _constructGeoFencePolygon(newInnerBufferPoly, innerBufferCoords);
@@ -323,9 +355,10 @@ void WindAwareMissionPlanner::_computeWindBufferPolygons() {
 
     // Draw outer buffer around inner buffer
     QList<QGeoCoordinate> outerBufferCoords;
+    QList<QGeoCoordinate> outerInteriorBufferCoords;
 
     WindAwareMissionPlanner::polygon outerPoly = _generateOuterBufferPolygon(innerPolygon);
-    qDebug() << "here6";
+
     // Convert buffer points back to lat lon coordinates
     for(const auto& point : outerPoly.outer()) {
         QGeoCoordinate newCoord;
@@ -333,11 +366,34 @@ void WindAwareMissionPlanner::_computeWindBufferPolygons() {
         outerBufferCoords.push_back(newCoord);
     }
 
+    if (outerPoly.inners().size() > 0) {
+        boost::geometry::correct(outerPoly);
+        for (const auto& interiorRing : outerPoly.inners()) {
+
+            for (const auto& point : interiorRing) {
+                QGeoCoordinate newCoord;
+                convertNedToGeo(point.x(), point.y(), 0.0, ltpOrigin, &newCoord);
+                outerInteriorBufferCoords.push_back(newCoord);
+            }
+
+            QGCFencePolygon* newOuterInnerBufferPoly = new QGCFencePolygon(true, _masterController->geoFenceController());
+            _constructGeoFencePolygon(newOuterInnerBufferPoly, outerInteriorBufferCoords);
+            outerBufferInteriorPolygons()->append(newOuterInnerBufferPoly);
+            outerInteriorBufferCoords.clear();
+        }
+    }
+
+
     QGCFencePolygon* newOuterBufferPoly = new QGCFencePolygon(true, _masterController->geoFenceController());
     _constructGeoFencePolygon(newOuterBufferPoly, outerBufferCoords);
 
+    innerWindBufferPolygon()->clearAndDeleteContents();
+    outerWindBufferPolygon()->clearAndDeleteContents();
 
-    windBufferPolygons()->clearAndDeleteContents();
-    windBufferPolygons()->append(newInnerBufferPoly);
-    windBufferPolygons()->append(newOuterBufferPoly);
+    innerWindBufferPolygon()->append(newInnerBufferPoly);
+    outerWindBufferPolygon()->append(newOuterBufferPoly);
+
+
+    //qDebug() << "OUTERINTERIOR Len: " << outerBufferInteriorPolygons()->count() << " | INNERINTERIOR LEN: " << innerBufferInteriorPolygons()->count();
+
 }

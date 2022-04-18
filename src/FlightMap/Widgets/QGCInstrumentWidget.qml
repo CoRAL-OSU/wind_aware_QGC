@@ -72,7 +72,7 @@ ColumnLayout {
 
         QGCLabel {
             id:                     windDisplayLabel
-            text:                   "Wind Conditions"
+            text:                   "Wind Conditions (m/s)"
             anchors.left:           parent.left
             anchors.right:          parent.right
             anchors.top:            parent.top
@@ -97,7 +97,8 @@ ColumnLayout {
 
             model: [
                 {value: windWidget, text: qsTr("Gradient") },
-                {value: compass_2d, text: qsTr("2D Compass") }
+                {value: compass_2d, text: qsTr("2D Compass") },
+                {value: compass_components, text: qsTr("Compass Components") }
             ]
         }
 
@@ -113,8 +114,8 @@ ColumnLayout {
                 anchors.fill:           parent
                 visible:                windInstrument.selectedDisplayType === this
             }
-            QGCWindWidget {
-                id:                     compass_3d
+            QGCPlanarComponentWindDisplay {
+                id:                     compass_components
                 anchors.fill:           parent
                 visible:                windInstrument.selectedDisplayType === this
             }
