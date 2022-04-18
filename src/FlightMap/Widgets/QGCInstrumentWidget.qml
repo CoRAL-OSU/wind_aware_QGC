@@ -113,10 +113,12 @@ ColumnLayout {
                 id:                     compass_2d
                 anchors.fill:           parent
                 visible:                windInstrument.selectedDisplayType === this
+                vehicle:                globals.activeVehicle
             }
             QGCPlanarComponentWindDisplay {
                 id:                     compass_components
                 anchors.fill:           parent
+                vehicle:                globals.activeVehicle
                 visible:                windInstrument.selectedDisplayType === this
             }
 
