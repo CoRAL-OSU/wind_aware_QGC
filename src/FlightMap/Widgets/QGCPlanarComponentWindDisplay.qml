@@ -187,25 +187,6 @@ Item {
             }
         }
 
-        // Heading mag box
-        Rectangle {
-            id:                 planarHeadingBox
-            anchors.left:       parent.left
-            anchors.bottom:     parent.bottom
-            anchors.margins:    5
-            border.color:       qgcPal.text
-            radius:             4
-            color:              qgcPal.window
-            width:              parent.width / 4.5
-            height:             width * .65
-            QGCLabel {
-                id:                 planarHeadingLabel
-                text:               _windHeading.toFixed(0).padStart(3, '0')
-                color:              qgcPal.text
-                anchors.centerIn:   parent
-                anchors.margins:    1
-            }
-        }
     } // Compass
 
     Item {
