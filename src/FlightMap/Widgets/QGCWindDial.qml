@@ -20,10 +20,11 @@ Item {
     property real   arrowLength:      0
     property real   arrowAngle:       0
     property color  arrowColor:       Qt.rgba(1, 0, 0, 1)
-    property real   arrowHeadSize:    6
-    property real   arrowLineWidth:   3
+    property real   arrowHeadSize:    3
+    property real   arrowLineWidth:   2
     property real   baseCircleWidth:  2
-    property real   outlineOffset:    3
+    property real   outlineOffset:    0
+    property color  outlineColor:     arrowColor
 
     function drawArrow(length, angle) {
         arrowLength = length;
@@ -56,8 +57,8 @@ Item {
                 context.translate(-width/2, -height/2);
 
                 // Draw larger arrow for outline
-                context.strokeStyle = "white"
-                context.fillStyle = "white"
+                context.strokeStyle = outlineColor
+                context.fillStyle = outlineColor
                 context.lineWidth = arrowLineWidth + outlineOffset
 
                 // Draw leg of arrow

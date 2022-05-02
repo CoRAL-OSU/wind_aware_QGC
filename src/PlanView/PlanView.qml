@@ -448,6 +448,7 @@ Item {
                 model:          _planMasterController.windAwarePlanner.simplePlannedFlightPathSegments
                 opacity:        _editingLayer == _layerMission ? 1 : editorMap._nonInteractiveOpacity
                 color:          QGroundControl.globalPalette.colorBlue
+                lineWidth:      12
             }
 
 

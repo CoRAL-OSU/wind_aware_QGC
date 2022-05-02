@@ -45,23 +45,17 @@ AnalyzePage {
     Component {
         id:         pageComponent
         Item {
-//            function onInnerBufferUpdate(newVal) {
-//                test.text = qsTr(newVal)
-//                 //= parseFloat(newVal)
-//                windPlanner.innerBufferRadius = parseFloat(newVal);
-//                console.log(newVal)
-//            }
 
 
             QGCLabel{
                 id:         radius_label
-                text:       qsTr("Adjust Buffer Radius")
+                text:       qsTr("Adjust Buffer Radius (meters)")
             }
 
             QGCTextField {
                 anchors.top: radius_label.bottom
                 id:                 innerRadiusField
-                placeholderText:    qsTr("Inner radius: " + windPlanner.innerBufferRadius)
+                placeholderText:    qsTr("Inner radius: " + windPlanner.innerBufferRadius) + " (m)"
                 validator:          DoubleValidator {
                     bottom:         0.0;
                     top:            100.0;
@@ -75,7 +69,7 @@ AnalyzePage {
             QGCTextField {
                 anchors.top: innerRadiusField.bottom
                 id:                 outerRadiusField
-                placeholderText:    qsTr("Outer radius: " + windPlanner.outerBufferRadius)
+                placeholderText:    qsTr("Outer radius: " + windPlanner.outerBufferRadius) + " (m)"
                 validator:          DoubleValidator {
                     bottom:         0.0;
                     top:            100.0;
@@ -88,7 +82,7 @@ AnalyzePage {
 
             QGCLabel{
                 id:         color_label
-                text:       qsTr("Adjust Buffer Radius")
+                text:       qsTr("Adjust Buffer Radius (meters)")
                 anchors.top: outerRadiusField.bottom
             }
 

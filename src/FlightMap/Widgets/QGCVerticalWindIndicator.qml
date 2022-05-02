@@ -15,7 +15,7 @@ Item {
     property real verticalWindSpeed: 0
     property real verticalWindSpeedMax: 5
 
-    property color arrowColor: "green"
+    property color verticalArrowColor: Qt.rgba(1, 1, 0, 1)
 
     function draw() {
         verticalCompassArrow.draw()
@@ -42,8 +42,11 @@ Item {
         id:             verticalCompassArrow
         anchors.fill:   verticalCompassImage
         arrowLength:    verticalWindSpeed * (parent.height / (2*verticalWindSpeedMax))
-        arrowAngle:     (verticalWindSpeed > 0) ? 0 : Math.PI
-        arrowColor:     arrowColor
+        arrowAngle:     (verticalWindSpeed > 0) ? Math.PI : 0
+        arrowColor:     verticalArrowColor
+        arrowLineWidth: 4
         visible:        true
+        arrowHeadSize: 4
+
     }
 }

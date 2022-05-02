@@ -28,6 +28,7 @@ Item {
     property real _verticalMaxSpeed:    5.0
     property real _planarMaxSpeed:      15.0
     property color  _windPointerColor:  Qt.rgba(1, 0, 0, 1)
+    property color verticalArrowColor: Qt.rgba(0, 0, 1, 1)
     property bool showAircraftHeading: false
     property real _radius:              planarHeadingDial.radius
     on_WindSpeedChanged: { // Updates compass and gradients when new wind velocities arrive.
@@ -190,6 +191,7 @@ Item {
                 color:              qgcPal.text
                 anchors.centerIn:   parent
                 anchors.margins:    1
+
             }
         }
     } // Compass
@@ -206,6 +208,8 @@ Item {
             anchors.fill:           parent
             verticalWindSpeed:      _windSpeedDown
             verticalWindSpeedMax:   _verticalMaxSpeed
+            //arrowColor:             verticalArrowColor
+
         }
 
 

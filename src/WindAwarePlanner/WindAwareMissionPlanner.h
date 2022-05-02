@@ -48,32 +48,30 @@ public:
 
 
     // Properties needed by QML
-    Q_PROPERTY(QmlObjectListModel*  plannedItems                        READ plannedItems                       NOTIFY plannedItemsChanged)
-    Q_PROPERTY(QmlObjectListModel*  simplePlannedFlightPathSegments     READ simplePlannedFlightPathSegments    NOTIFY plannedFlightSegmentsChanged)
-    //Q_PROPERTY(QmlObjectListModel*  windBufferPolygons                  READ windBufferPolygons                 CONSTANT)
-    Q_PROPERTY(QmlObjectListModel*     innerWindBufferPolygon              READ innerWindBufferPolygon             CONSTANT)
-    Q_PROPERTY(QmlObjectListModel*     outerWindBufferPolygon              READ outerWindBufferPolygon             CONSTANT)
-    Q_PROPERTY(QmlObjectListModel*     innerBufferInteriorPolygons              READ innerBufferInteriorPolygons             CONSTANT)
-    Q_PROPERTY(QmlObjectListModel*     outerBufferInteriorPolygons              READ outerBufferInteriorPolygons             CONSTANT)
-    Q_PROPERTY(QString              innerBufferColor                    MEMBER _innerBufferColor                NOTIFY bufferPropertiesChanged)
-    Q_PROPERTY(QString              outerBufferColor                    MEMBER _outerBufferColor                NOTIFY bufferPropertiesChanged)
-    Q_PROPERTY(double               innerBufferRadius                   MEMBER _innerBufferRadius               NOTIFY bufferPropertiesChanged)
-    Q_PROPERTY(double               outerBufferRadius                   MEMBER _outerBufferRadius               NOTIFY bufferPropertiesChanged)
-
-    //Q_PROPERTY(QGeoPolygon* outerBufferPolygon  READ  outerBufferPolygon CONSTANT)
-    Q_PROPERTY(QmlObjectListModel*     bufferPolygons              READ polygonObjectList             CONSTANT)
+    Q_PROPERTY(QmlObjectListModel*  plannedItems                        READ    plannedItems                        NOTIFY plannedItemsChanged)
+    Q_PROPERTY(QmlObjectListModel*  simplePlannedFlightPathSegments     READ    simplePlannedFlightPathSegments     NOTIFY plannedFlightSegmentsChanged)
+    Q_PROPERTY(QmlObjectListModel*  innerWindBufferPolygon              READ    innerWindBufferPolygon              CONSTANT)
+    Q_PROPERTY(QmlObjectListModel*  outerWindBufferPolygon              READ    outerWindBufferPolygon              CONSTANT)
+    Q_PROPERTY(QmlObjectListModel*  innerBufferInteriorPolygons         READ    innerBufferInteriorPolygons         CONSTANT)
+    Q_PROPERTY(QmlObjectListModel*  outerBufferInteriorPolygons         READ    outerBufferInteriorPolygons         CONSTANT)
+    Q_PROPERTY(QString              innerBufferColor                    MEMBER  _innerBufferColor                   NOTIFY bufferPropertiesChanged)
+    Q_PROPERTY(QString              outerBufferColor                    MEMBER  _outerBufferColor                   NOTIFY bufferPropertiesChanged)
+    Q_PROPERTY(double               innerBufferRadius                   MEMBER  _innerBufferRadius                  NOTIFY bufferPropertiesChanged)
+    Q_PROPERTY(double               outerBufferRadius                   MEMBER  _outerBufferRadius                  NOTIFY bufferPropertiesChanged)
+    Q_PROPERTY(QmlObjectListModel*  bufferPolygons                      READ    polygonObjectList                   CONSTANT)
 
 
     // Accessor for private variable
-    QmlObjectListModel* plannedItems                        (void) {return _plannedVisualitems; }
-    QmlObjectListModel* simplePlannedFlightPathSegments     (void) {return &_flightPathSegments; }
-    //QmlObjectListModel* windBufferPolygons                  (void) {return &_windBufferPolygons; }
-    QmlObjectListModel*    innerWindBufferPolygon              (void) {return &_innerWindBufferPolygon; }
-    QmlObjectListModel*    outerWindBufferPolygon              (void) {return &_outerWindBufferPolygon; }
-    QmlObjectListModel*    innerBufferInteriorPolygons              (void) {return &_innerBufferInteriorPolygons; }
-    QmlObjectListModel*    outerBufferInteriorPolygons              (void) {return &_outerBufferInteriorPolygons; }
-    QGeoPolygon*           outerBufferPolygon               (void){return &_outerBufferPolygon; }
-    QmlObjectListModel*     polygonObjectList       (void) { return &_polygonObjectList; }
+    QmlObjectListModel*     plannedItems                        (void) {return _plannedVisualitems; }
+    QmlObjectListModel*     simplePlannedFlightPathSegments     (void) {return &_flightPathSegments; }
+    QmlObjectListModel*     innerWindBufferPolygon              (void) {return &_innerWindBufferPolygon; }
+    QmlObjectListModel*     outerWindBufferPolygon              (void) {return &_outerWindBufferPolygon; }
+    QmlObjectListModel*     innerBufferInteriorPolygons         (void) {return &_innerBufferInteriorPolygons; }
+    QmlObjectListModel*     outerBufferInteriorPolygons         (void) {return &_outerBufferInteriorPolygons; }
+    QGeoPolygon*            outerBufferPolygon                  (void) {return &_outerBufferPolygon; }
+    QmlObjectListModel*     polygonObjectList                   (void) { return &_polygonObjectList; }
+    double                  innerBufferRadius                   (void) {return _innerBufferRadius; }
+    double                  outerBufferRadius                   (void) {return _outerBufferRadius; }
 
 signals:
     void plannedItemsChanged                (void);
@@ -94,21 +92,20 @@ private:
     double                  _innerBufferRadius = 5.0;
     double                  _outerBufferRadius = 10.0; // Distance from trajectory to outer buffer
 
-    PlanMasterController*   _masterController;
-    QmlObjectListModel*     _plannedVisualitems;
-    QmlObjectListModel      _flightPathSegments;
-    //QmlObjectListModel      _windBufferPolygons;
-    QmlObjectListModel        _innerWindBufferPolygon;
-    QmlObjectListModel        _outerWindBufferPolygon;
-    QmlObjectListModel      _innerBufferInteriorPolygons;
-    QmlObjectListModel      _outerBufferInteriorPolygons;
-    //QList<QGeoPolygon>      _outerBufferPolygon;
+    PlanMasterController*       _masterController;
+    QmlObjectListModel*         _plannedVisualitems;
+    QmlObjectListModel          _flightPathSegments;
+    QmlObjectListModel          _innerWindBufferPolygon;
+    QmlObjectListModel          _outerWindBufferPolygon;
+    QmlObjectListModel          _innerBufferInteriorPolygons;
+    QmlObjectListModel          _outerBufferInteriorPolygons;
 
-    QGeoPolygon             _outerBufferPolygon;
+    QGeoPolygon                 _outerBufferPolygon;
 
     // Wind risk buffer generation, display
     void                                        _computeWindBufferPolygons(void);
     WindAwareMissionPlanner::polygon            _generateInnerBufferPolygon(QList<WindAwareMissionPlanner::point> trajectoryCoords_Cartesian);
+    WindAwareMissionPlanner::polygon            _generateBufferPolygon(QList<WindAwareMissionPlanner::point> trajectoryCoords_Cartesian, double radius, int pointsInRadius = 10);
     WindAwareMissionPlanner::polygon            _generateOuterBufferPolygon(WindAwareMissionPlanner::polygon innerPolygon);
     void                                        _constructGeoFencePolygon(QGCFencePolygon* newPoly, QList<QGeoCoordinate> vertexList);
 
