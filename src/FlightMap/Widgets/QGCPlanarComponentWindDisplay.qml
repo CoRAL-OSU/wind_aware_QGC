@@ -154,8 +154,8 @@ Item {
             QGCWindDial {
                 id:             eastHeadingArrow
                 anchors.fill:   planarHeadingDial
-                arrowLength:    _windSpeedEast * (width / (2*_planarMaxSpeed))
-                arrowAngle:     (_windSpeedEast > 0) ? Math.PI / 2 : (3 * Math.Pi / 2)
+                arrowLength:    Math.abs(_windSpeedEast * (width / (2*_planarMaxSpeed)))
+                arrowAngle:     (_windSpeedEast >= 0) ? Math.PI  / 2 : (3 * Math.PI  / 2)
                 arrowColor:     eastArrowColor
                 arrowLineWidth: 5
             }
@@ -163,8 +163,8 @@ Item {
             QGCWindDial {
                 id:             northHeadingArrow
                 anchors.fill:   planarHeadingDial
-                arrowLength:    _windSpeedNorth * (width / (2*_planarMaxSpeed))
-                arrowAngle:     (_windSpeedNorth >= 0) ? 0.0 : Math.Pi
+                arrowLength:    Math.abs(_windSpeedNorth * (width / (2*_planarMaxSpeed)))
+                arrowAngle:     (_windSpeedNorth >= 0) ? 0.0 : Math.PI
                 arrowColor:     northArrowColor
                 arrowLineWidth: 5
             }
