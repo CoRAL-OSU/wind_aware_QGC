@@ -606,7 +606,7 @@ Item {
         //-----------------------------------------------------------
         // Wind-aware trajectory update
         Rectangle {
-            id:                 windAwareRect
+            id:                 windAware
             anchors.margins:    _toolsMargin
             anchors.left:       toolStrip.right
             anchors.top:        parent.top
@@ -614,83 +614,145 @@ Item {
             width:              _rightPanelWidth;
             height:             width/2;
             color:              qgcPal.window;
-            property bool showPlannedTrajectory: false
+            visible: false
 
-            function displayWind(response) {
-                if(response) {
-                    _planMasterController.windAwarePlanner.generateOptimalTrajectory()
 
-                    showPlannedTrajectory = true
+            function setVisible(value) {
+                windAware.visible = value;
+                windAwarePreviewPrompt.visible = true;
+                windAwareAcceptPrompt.visible = false;
+            }
+
+            Connections {
+                target:         _missionController.visualItems
+                function onCountChanged() { windAware.setVisible(true) }
+            }
+
+            Rectangle {
+                id:                 windAwarePreviewPrompt
+                color:              qgcPal.window;
+                anchors.fill:       parent
+                //visible:            _planMasterController.missionController.missionItemCount > 2 && !(windAwareAcceptPrompt.visible)
+
+                property bool showPlannedTrajectory: false
+
+                function displayWind(response) {
+                    if(response) {
+                        _planMasterController.windAwarePlanner.generateOptimalTrajectory()
+
+                        windAwareAcceptPrompt.visible = true
+                        windAwarePreviewPrompt.visible = false
+                    }
+                    else {
+                        _planMasterController.windAwarePlanner.approveOptimalTrajectory(false)
+                        windAware.visible = false
+                    }
+
                 }
-                else {
-                    _planMasterController.windAwarePlanner.approveOptimalTrajectory(false)
-                    showPlannedTrajectory = false
-                    visible = false
+
+                QGCLabel {
+                    id:             windRecommendLabel;
+                    text:           "An alternate, optimal trajectory has been calculated."
+                    wrapMode:           Text.WordWrap
+                    horizontalAlignment:    Text.AlignHCenter
+                    anchors.left:   parent.left
+                    anchors.right:  parent.right
+                    anchors.top:    parent.top
+                }
+                Button {
+                    id:             windDisplayButton
+                    anchors.left:   parent.left
+                    anchors.bottom: parent.bottom
+                    height:         parent.height/2
+                    width:          parent.width/3
+                    text:           "Display"
+                    //visible:        !parent.showPlannedTrajectory
+                    onClicked:      parent.displayWind(true)
+                }
+                Button {
+                    id:             windIgnoreButton
+                    anchors.right:  parent.right
+                    anchors.bottom: parent.bottom
+                    height:         parent.height/2
+                    width:          parent.width/3
+                    text:           "Ignore"
+                    //visible:        !parent.showPlannedTrajectory
+                    onClicked:      parent.displayWind(false)
+                }
+            }
+
+            Rectangle {
+                id:                 windAwareAcceptPrompt
+                anchors.fill:       parent
+                color:              qgcPal.window;
+                visible:            false
+
+//                function displayWind(response) {
+//                    if(response) {
+//                        _planMasterController.windAwarePlanner.generateOptimalTrajectory()
+
+//                        //showPlannedTrajectory = true
+//                        windAwareAcceptPrompt.visible = false
+//                    }
+//                    else {
+//                        _planMasterController.windAwarePlanner.approveOptimalTrajectory(false)
+//                        //showPlannedTrajectory = false
+//                        windAwareAcceptPrompt.visible = false
+//                    }
+
+//                }
+
+//                function acceptNewTrajectory(response) {
+//                    if(response){
+//                        _planMasterController.windAwarePlanner.approveOptimalTrajectory(true)
+//                    } else {
+//                        _planMasterController.windAwarePlanner.approveOptimalTrajectory(false)
+//                    }
+//                    windAwareAcceptPrompt.visible = false
+//                    windAware.visible = false
+//                }
+
+                QGCLabel {
+                    id:                     windAcceptLabel;
+                    text:                   "Do you approve this trajectory?"
+                    wrapMode:               Text.WordWrap
+                    horizontalAlignment:    Text.AlignHCenter
+                    anchors.left:           parent.left
+                    anchors.right:          parent.right
+                    anchors.top:            parent.top
                 }
 
-            }
-
-            function acceptNewTrajectory(response) {
-                if(response){
-                    _planMasterController.windAwarePlanner.approveOptimalTrajectory(true)
-                } else {
-                    _planMasterController.windAwarePlanner.approveOptimalTrajectory(false)
+                Button {
+                    id:             windAcceptButton
+                    anchors.left:   parent.left
+                    anchors.bottom:    parent.bottom
+                    width:          parent.width/3
+                    height:         parent.height/2
+                    text:           "Accept"
+                    onClicked: {
+                        _planMasterController.windAwarePlanner.approveOptimalTrajectory(true);
+                        windAwareAcceptPrompt.visible = false;
+                        windAware.visible = false;
+                    }
                 }
-                visible = false
-            }
 
-            QGCLabel {
-                id:             windRecommendLabel;
-                text:           "An alternate, optimal trajectory has been calculated."
-                wrapMode:           Text.WordWrap
-                horizontalAlignment:    Text.AlignHCenter
-                anchors.left:   parent.left
-                anchors.right:  parent.right
-                anchors.top:    parent.top
-            }
-            Button {
-                id:             windDisplayButton
-                anchors.left:   parent.left
-                anchors.bottom: parent.bottom
-                height:         parent.height/2
-                width:          parent.width/3
-                text:           "Display"
-                visible:        !parent.showPlannedTrajectory
-                onClicked:      parent.displayWind(true)
-            }
-            Button {
-                id:             windIgnoreButton
-                anchors.right:  parent.right
-                anchors.bottom: parent.bottom
-                height:         parent.height/2
-                width:          parent.width/3
-                text:           "Ignore"
-                visible:        !parent.showPlannedTrajectory
-                onClicked:      parent.displayWind(false)
-            }
-
-            Button {
-                id:             windAcceptButton
-                anchors.left:   parent.left
-                anchors.bottom:    parent.bottom
-                width:          parent.width/3
-                height:         parent.height/2
-                text:           "Accept"
-                visible:        parent.showPlannedTrajectory
-                onClicked:      _planMasterController.windAwarePlanner.approveOptimalTrajectory(true)
-            }
-
-            Button {
-                id:             windRejectButton
-                anchors.right:  parent.right
-                anchors.bottom: parent.bottom
-                height:         parent.height/2
-                width:          parent.width/3
-                text:           "Reject"
-                visible:        parent.showPlannedTrajectory
-                onClicked:      _planMasterController.windAwarePlanner.approveOptimalTrajectory(false)
+                Button {
+                    id:             windRejectButton
+                    anchors.right:  parent.right
+                    anchors.bottom: parent.bottom
+                    height:         parent.height/2
+                    width:          parent.width/3
+                    text:           "Reject"
+                    onClicked: {
+                        _planMasterController.windAwarePlanner.approveOptimalTrajectory(false);
+                        windAwareAcceptPrompt.visible = false;
+                        windAware.visible = false;
+                    }
+                }
             }
         }
+
+
 
         //-----------------------------------------------------------
         // Left tool strip
