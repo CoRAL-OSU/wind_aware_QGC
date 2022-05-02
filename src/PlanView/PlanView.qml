@@ -632,8 +632,6 @@ Item {
                 id:                 windAwarePreviewPrompt
                 color:              qgcPal.window;
                 anchors.fill:       parent
-                //visible:            _planMasterController.missionController.missionItemCount > 2 && !(windAwareAcceptPrompt.visible)
-
                 property bool showPlannedTrajectory: false
 
                 function displayWind(response) {
@@ -666,7 +664,6 @@ Item {
                     height:         parent.height/2
                     width:          parent.width/3
                     text:           "Display"
-                    //visible:        !parent.showPlannedTrajectory
                     onClicked:      parent.displayWind(true)
                 }
                 Button {
@@ -676,7 +673,6 @@ Item {
                     height:         parent.height/2
                     width:          parent.width/3
                     text:           "Ignore"
-                    //visible:        !parent.showPlannedTrajectory
                     onClicked:      parent.displayWind(false)
                 }
             }
@@ -686,31 +682,6 @@ Item {
                 anchors.fill:       parent
                 color:              qgcPal.window;
                 visible:            false
-
-//                function displayWind(response) {
-//                    if(response) {
-//                        _planMasterController.windAwarePlanner.generateOptimalTrajectory()
-
-//                        //showPlannedTrajectory = true
-//                        windAwareAcceptPrompt.visible = false
-//                    }
-//                    else {
-//                        _planMasterController.windAwarePlanner.approveOptimalTrajectory(false)
-//                        //showPlannedTrajectory = false
-//                        windAwareAcceptPrompt.visible = false
-//                    }
-
-//                }
-
-//                function acceptNewTrajectory(response) {
-//                    if(response){
-//                        _planMasterController.windAwarePlanner.approveOptimalTrajectory(true)
-//                    } else {
-//                        _planMasterController.windAwarePlanner.approveOptimalTrajectory(false)
-//                    }
-//                    windAwareAcceptPrompt.visible = false
-//                    windAware.visible = false
-//                }
 
                 QGCLabel {
                     id:                     windAcceptLabel;
