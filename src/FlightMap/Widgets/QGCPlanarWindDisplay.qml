@@ -208,8 +208,6 @@ Item {
             anchors.fill:           parent
             verticalWindSpeed:      _windSpeedDown
             verticalWindSpeedMax:   _verticalMaxSpeed
-            //arrowColor:             verticalArrowColor
-
         }
 
 

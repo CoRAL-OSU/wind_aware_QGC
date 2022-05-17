@@ -38,25 +38,6 @@ Item {
         verticalGradientCanvas.requestPaint();
     }
 
-//    Item {
-//        id:             instrumentLabel
-//        anchors.right:  planarHeadingArea.left
-//        anchors.left:   parent.left
-//        anchors.top:    parent.top
-//        anchors.leftMargin: 3
-//        height:         planarHeadingArea.height
-
-//        QGCLabel {
-//            id:                     windLabel
-//            anchors.left:           parent.left
-//            anchors.right:          parent.right
-//            anchors.verticalCenter: parent.verticalCenter
-//            text:                   "Wind m/s"
-//            wrapMode:           Text.WrapAnywhere
-//            horizontalAlignment:    Text.AlignHCenter
-//        }
-//    }
-
     // Compass, heading arrow and magnitude, aircraft heading
     Item {
         id:             planarHeadingArea

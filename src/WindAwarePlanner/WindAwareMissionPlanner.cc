@@ -3,33 +3,6 @@
  * Purpose: Generate and recommend wind-optimal trajectories to users.
  */
 
-/* WindAwareMissionPlanner
- * - Generates trajectory recommendations and displays then on PlanView
- * - Generates buffer zone around trajectory
- */
-
-
-/*
- * PlanView
- * - Trajectory Recommend Popup
- * - - Accept new trajectory: "ApproveNewTrajectory(true)", replace current trajectory with new trajectory
- * - - Deny:                  "ApproveNewTrajectory(false)", remove computed trajectory from memory
- *
- * RiskManagement
- * - WindBuffer settings
- * - - Color, radius of buffers
- *
- * - Trajectory recommend settings
- * - - Manual generation request
- *
- * - WindDisplayWidget
- * - - Enable widget display
- *
- * WindAwareMissionPlanner
- * - ApproveNewTrajectory: replace current traj. with new trajectory. Problem is maintaining all mission items accurately.
- * - GenerateWindBuffer:   done whenever trajectory changes (ie listen to missioncontroller
- *
- */
 
 #include "WindAwareMissionPlanner.h"
 #include "PlanMasterController.h"
@@ -91,7 +64,6 @@ void WindAwareMissionPlanner::generateOptimalTrajectory() {
 
     }
 
-
     _insertSimplePlannedMissionItem(newEndPoint->coordinate(), itemIndex++, false);
     emit plannedItemsChanged();
 
@@ -123,8 +95,6 @@ void WindAwareMissionPlanner::_insertOptimalTrajectory() {
     // Remove 2nd waypoint j-2 times. ie preserve waypoints 0 and 1, the mission settings and takeoff.
     int j = currentItems->count();
     for(int i = 1; i < j; i++) {
-        qDebug() << "REMOVING: " << i;
-        _printCurrentItems();
         _masterController->missionController()->removeVisualItem(1);
     }
     VisualMissionItem* takeoffItem = qobject_cast<VisualMissionItem*>(plannedItems()->get(0));
@@ -140,8 +110,6 @@ void WindAwareMissionPlanner::_insertOptimalTrajectory() {
     }
 
     _plannedVisualitems->clear();
-
-    //GenerateWindBuffer();
 }
 
 // Builds new mission item and inserts to the list of planned items
@@ -158,7 +126,7 @@ VisualMissionItem* WindAwareMissionPlanner::_insertSimplePlannedMissionItem(QGeo
 
 // Generates new flight segments that connect planned visual items, for preview on PlanView
 void WindAwareMissionPlanner::_regenerateFlightSegments() {
-    qDebug() << "recalculating flight segments";
+
     simplePlannedFlightPathSegments()->clear();
     VisualItemPair itemPair;
     VisualMissionItem* lastItem = qobject_cast<VisualMissionItem*>(plannedItems()->get(0));
@@ -195,8 +163,6 @@ FlightPathSegment* WindAwareMissionPlanner::_createFlightPathSegment(VisualItemP
     return segment;
 }
 
-
-
 // Prints visual items currently being used by master controller
 void WindAwareMissionPlanner::_printCurrentItems() {
     QmlObjectListModel* currentItems = _masterController->missionController()->visualItems();
@@ -221,7 +187,6 @@ void WindAwareMissionPlanner::generateWindBuffer() {
 }
 
 void WindAwareMissionPlanner::generateWindBuffer_slot() {
-    //_printCurrentItems();
     generateWindBuffer();
 }
 
@@ -231,50 +196,6 @@ void WindAwareMissionPlanner::_constructGeoFencePolygon(QGCFencePolygon* newPoly
     }
     newPoly->setInteractive(false);
     newPoly->setInclusion(false);
-}
-
-WindAwareMissionPlanner::polygon WindAwareMissionPlanner::_generateInnerBufferPolygon(QList<point> trajectoryCoords_Cartesian) {
-    const double buffer_distance = _innerBufferRadius; // meters
-    const int points_per_circle = 10;
-    boost::geometry::strategy::buffer::distance_symmetric<coordinate_type> inner_dist_strategy(buffer_distance);
-    boost::geometry::strategy::buffer::distance_symmetric<coordinate_type> outer_dist_strategy(buffer_distance + 5);
-
-    boost::geometry::strategy::buffer::join_round join_strategy(points_per_circle);
-    boost::geometry::strategy::buffer::end_round end_strategy(points_per_circle);
-    boost::geometry::strategy::buffer::point_circle circle_strategy(points_per_circle);
-    boost::geometry::strategy::buffer::side_straight side_strategy;
-
-    boost::geometry::model::multi_polygon<polygon> innerMultiPoly;
-    boost::geometry::model::linestring<point> ls;
-
-    for( auto& c : trajectoryCoords_Cartesian) {
-        ls.push_back(c);
-    }
-
-    boost::geometry::buffer(ls, innerMultiPoly,
-                inner_dist_strategy, side_strategy,
-                join_strategy, end_strategy, circle_strategy);
-
-    return innerMultiPoly.at(0);
-}
-
-WindAwareMissionPlanner::polygon WindAwareMissionPlanner::_generateOuterBufferPolygon(WindAwareMissionPlanner::polygon innerPolygon) {
-    const double buffer_distance = _outerBufferRadius - _innerBufferRadius; // meters
-    const int points_per_circle = 10;
-    boost::geometry::strategy::buffer::distance_symmetric<WindAwareMissionPlanner::coordinate_type> outer_dist_strategy(buffer_distance);
-
-    boost::geometry::strategy::buffer::join_round join_strategy(points_per_circle);
-    boost::geometry::strategy::buffer::end_round end_strategy(points_per_circle);
-    boost::geometry::strategy::buffer::point_circle circle_strategy(points_per_circle);
-    boost::geometry::strategy::buffer::side_straight side_strategy;
-
-    boost::geometry::model::multi_polygon<polygon> outerMultiPoly;
-
-    boost::geometry::buffer(innerPolygon, outerMultiPoly,
-                    outer_dist_strategy, side_strategy,
-                    join_strategy, end_strategy, circle_strategy);
-
-    return outerMultiPoly.at(0);
 }
 
 WindAwareMissionPlanner::polygon WindAwareMissionPlanner::_generateBufferPolygon(QList<point> trajectoryCoords_Cartesian, double radius, int pointsInRadius) {
@@ -297,16 +218,6 @@ WindAwareMissionPlanner::polygon WindAwareMissionPlanner::_generateBufferPolygon
                 join_strategy, end_strategy, circle_strategy);
 
     return multiPoly.at(0);
-}
-
-PolygonObject::PolygonObject(QList<QGeoCoordinate> coordList) {
-    //polygon().setPath(coordList);
-    _polygon = new QGeoPolygon(coordList);
-    qDebug() << polygon();
-    qDebug() << polygon()->size();
-}
-PolygonObject::~PolygonObject() {
-    delete _polygon;
 }
 
 void WindAwareMissionPlanner::_computeWindBufferPolygons() {
@@ -339,13 +250,10 @@ void WindAwareMissionPlanner::_computeWindBufferPolygons() {
         point newP = point(ltpX, ltpY);
         trajectoryCartesian.push_back(newP);
     }
-    qDebug() << "before generating";
+
     // Generate inner buffer --------------------------------------------
     if(this->innerBufferRadius() > 0) {
-        //innerPolygon = _generateInnerBufferPolygon(trajectoryCartesian);
         innerPolygon = _generateBufferPolygon(trajectoryCartesian, this->innerBufferRadius());
-
-        qDebug() << "test";
 
         // Convert buffer points back to lat lon coordinates
         for(const auto& point : innerPolygon.outer()) {
@@ -357,7 +265,6 @@ void WindAwareMissionPlanner::_computeWindBufferPolygons() {
         if(innerPolygon.inners().size() > 0) {
             boost::geometry::correct(innerPolygon);
             for(const auto& interiorRing : innerPolygon.inners()) {
-                //boost::geometry::correct(interiorRing);
                 boost::geometry::model::ring<WindAwareMissionPlanner::point> ring = interiorRing;
                 boost::geometry::correct(ring);
 
@@ -381,8 +288,6 @@ void WindAwareMissionPlanner::_computeWindBufferPolygons() {
     else {
         innerWindBufferPolygon()->clearAndDeleteContents();
     }
-    qDebug() << "after generating";
-
 
     // Generate outer buffer --------------------------------------------
     if(this->outerBufferRadius() > 0) {
@@ -390,7 +295,6 @@ void WindAwareMissionPlanner::_computeWindBufferPolygons() {
         QList<QGeoCoordinate> outerBufferCoords;
         QList<QGeoCoordinate> outerInteriorBufferCoords;
 
-        //WindAwareMissionPlanner::polygon outerPoly = _generateOuterBufferPolygon(innerPolygon);
         WindAwareMissionPlanner::polygon outerPoly = _generateBufferPolygon(trajectoryCartesian, this->outerBufferRadius());
         // Convert buffer points back to lat lon coordinates
         for(const auto& point : outerPoly.outer()) {

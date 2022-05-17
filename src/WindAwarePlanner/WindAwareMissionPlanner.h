@@ -11,24 +11,6 @@
 
 class PlanMasterController;
 
-class PolygonObject : public QObject {
-    Q_OBJECT
-
-public:
-
-    Q_PROPERTY(QGeoPolygon polygonGadget READ polygonGadget CONSTANT)
-
-    QGeoPolygon polygonGadget (void) {return *_polygon;}
-    QGeoPolygon* polygon (void) {return _polygon; }
-
-
-    PolygonObject(QList<QGeoCoordinate> coordList);
-    ~PolygonObject();
-private:
-    QGeoPolygon* _polygon;
-
-};
-
 class WindAwareMissionPlanner : public QObject
 {
     Q_OBJECT
@@ -104,9 +86,7 @@ private:
 
     // Wind risk buffer generation, display
     void                                        _computeWindBufferPolygons(void);
-    WindAwareMissionPlanner::polygon            _generateInnerBufferPolygon(QList<WindAwareMissionPlanner::point> trajectoryCoords_Cartesian);
     WindAwareMissionPlanner::polygon            _generateBufferPolygon(QList<WindAwareMissionPlanner::point> trajectoryCoords_Cartesian, double radius, int pointsInRadius = 10);
-    WindAwareMissionPlanner::polygon            _generateOuterBufferPolygon(WindAwareMissionPlanner::polygon innerPolygon);
     void                                        _constructGeoFencePolygon(QGCFencePolygon* newPoly, QList<QGeoCoordinate> vertexList);
 
     // New trajectory insertion and preview generation
