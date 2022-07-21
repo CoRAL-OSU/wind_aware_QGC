@@ -43,7 +43,7 @@ public:
     Q_PROPERTY(MissionController*       missionController       READ missionController                      CONSTANT)
     Q_PROPERTY(GeoFenceController*      geoFenceController      READ geoFenceController                     CONSTANT)
     Q_PROPERTY(RallyPointController*    rallyPointController    READ rallyPointController                   CONSTANT)
-    Q_PROPERTY(WindAwareMissionPlanner* windAwarePlanner        READ windAwarePlanner                       CONSTANT)
+    //Q_PROPERTY(WindAwareMissionPlanner* windAwarePlanner        READ windAwarePlanner                       CONSTANT)
     Q_PROPERTY(bool                     offline                 READ offline                                NOTIFY offlineChanged)          ///< true: controller is not connected to an active vehicle
     Q_PROPERTY(bool                     containsItems           READ containsItems                          NOTIFY containsItemsChanged)    ///< true: Elemement is non-empty
     Q_PROPERTY(bool                     syncInProgress          READ syncInProgress                         NOTIFY syncInProgressChanged)   ///< true: Information is currently being saved/sent, false: no active save/send in progress
@@ -106,7 +106,8 @@ public:
 
     Vehicle* controllerVehicle(void) { return _controllerVehicle; }
     Vehicle* managerVehicle(void) { return _managerVehicle; }
-    WindAwareMissionPlanner* windAwarePlanner(void) {return &_windAwarePlanner; }
+    //WindAwareMissionPlanner* windAwarePlanner(void) {return &_windAwarePlanner; }
+    bool    flyView (void) { return _flyView; }
 
     static const int    kPlanFileVersion;
     static const char*  kPlanFileType;
@@ -149,7 +150,7 @@ private:
     MissionController       _missionController;
     GeoFenceController      _geoFenceController;
     RallyPointController    _rallyPointController;
-    WindAwareMissionPlanner _windAwarePlanner;
+    //WindAwareMissionPlanner _windAwarePlanner;
     bool                    _loadGeoFence =             false;
     bool                    _loadRallyPoints =          false;
     bool                    _sendGeoFence =             false;

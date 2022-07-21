@@ -451,7 +451,7 @@ Item {
                 lineWidth:      12
             }
 
-
+            // Add inner buffer polygons
             Instantiator {
                 model: _planMasterController.windAwarePlanner.innerWindBufferPolygon
 
@@ -465,9 +465,9 @@ Item {
                     interior_opacity:       0.2 * opacity
                     interactive:            false
                 }
-
             }
 
+            // Add outer buffer polygons
             Instantiator {
                 model: _planMasterController.windAwarePlanner.outerWindBufferPolygon
 

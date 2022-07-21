@@ -19,6 +19,8 @@ import QGroundControl.Controls      1.0
 import QGroundControl.ScreenTools   1.0
 import QGroundControl.FlightDisplay 1.0
 import QGroundControl.FlightMap     1.0
+import QGroundControl.Controllers   1.0
+
 
 /// @brief Native QML top level window
 /// All properties defined here are visible to all QML pages.
@@ -86,6 +88,8 @@ ApplicationWindow {
 
         property var                planMasterControllerPlanView:   null
         property var                currentPlanMissionItem:         planMasterControllerPlanView ? planMasterControllerPlanView.missionController.currentPlanViewItem : null
+
+        property var                windAwareMissionPlanner:        _windAwareMissionPlanner
     }
 
     /// Default color palette used throughout the UI
@@ -396,6 +400,14 @@ ApplicationWindow {
         }
     }
 
+    WindAwareMissionPlanner {
+        id:                     _windAwareMissionPlanner
+        Component.onCompleted: {
+            start()
+            console.log("updating wamp");
+            flyViewMasterController = globals.planMasterControllerFlyView
+        }
+    }
 
     FlyView {
         id:             flightView
@@ -407,6 +419,8 @@ ApplicationWindow {
         anchors.fill:   parent
         visible:        false
     }
+
+
 
     Drawer {
         id:             toolDrawer

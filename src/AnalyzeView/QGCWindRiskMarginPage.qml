@@ -19,14 +19,19 @@ import QGroundControl.Airmap            1.0
 
 AnalyzePage {
     id:                 root
-    //property var controller: globals.planMasterController.windAwareController
 
     headerComponent:    headerComponent
     pageComponent:      pageComponent
     allowPopout:        false
+    property var windPlanner:               globals.windAwareMissionPlanner
+    property bool enableFlightViewBuffer:   true
 
-    property var _planMasterController: globals.planMasterControllerPlanView
-    property var windPlanner:           _planMasterController.windAwarePlanner
+    property string innerColor: windPlanner.innerPlanBuffer.settings.color
+    property double innerRadius: windPlanner.innerPlanBuffer.settings.radius
+
+    property string outerColor: windPlanner.outerPlanBuffer.settings.color
+    property double outerRadius: windPlanner.outerPlanBuffer.settings.radius
+
 
     Component {
         id:             headerComponent
@@ -46,16 +51,15 @@ AnalyzePage {
         id:         pageComponent
         Item {
 
-
             QGCLabel{
                 id:         radius_label
                 text:       qsTr("Adjust Buffer Radius (meters)")
             }
 
             QGCTextField {
-                anchors.top: radius_label.bottom
                 id:                 innerRadiusField
-                placeholderText:    qsTr("Inner radius: " + windPlanner.innerBufferRadius) + " (m)"
+                anchors.top:        radius_label.bottom
+                placeholderText:    qsTr("Inner radius: " + windPlanner.innerFlyBuffer.settings.radius) + " (m)"
                 validator:          DoubleValidator {
                     bottom:         0.0;
                     top:            100.0;
@@ -63,13 +67,13 @@ AnalyzePage {
                     notation:       DoubleValidator.StandardNotation
                 }
 
-                onEditingFinished:  acceptableInput ? windPlanner.innerBufferRadius = parseFloat(text) : console.log("error")
+                onEditingFinished: acceptableInput ? windPlanner.innerFlyBuffer.settings.radius = parseFloat(text) : console.log("error")
             }
 
             QGCTextField {
-                anchors.top: innerRadiusField.bottom
                 id:                 outerRadiusField
-                placeholderText:    qsTr("Outer radius: " + windPlanner.outerBufferRadius) + " (m)"
+                anchors.top:        innerRadiusField.bottom
+                placeholderText:    qsTr("Outer radius: " + windPlanner.outerFlyBuffer.settings.radius) + " (m)"
                 validator:          DoubleValidator {
                     bottom:         0.0;
                     top:            100.0;
@@ -77,31 +81,46 @@ AnalyzePage {
                     notation:       DoubleValidator.StandardNotation
                 }
 
-                onEditingFinished:  acceptableInput ? windPlanner.outerBufferRadius = parseFloat(text) : console.log("error")
+                onEditingFinished: acceptableInput ? windPlanner.outerFlyBuffer.settings.radius = parseFloat(text) : console.log("error")
             }
 
             QGCLabel{
                 id:         color_label
-                text:       qsTr("Adjust Buffer Radius (meters)")
+                text:       qsTr("Adjust Buffer Color")
                 anchors.top: outerRadiusField.bottom
             }
 
             QGCTextField {
-                anchors.top: color_label.bottom
                 id:                 innerColorField
-                placeholderText:    qsTr("Inner color: " + windPlanner.innerBufferColor)
+                anchors.top:        color_label.bottom
+                placeholderText:    qsTr("Inner color: " + windPlanner.innerFlyBuffer.settings.color)
 
-                onEditingFinished:  acceptableInput ? windPlanner.innerBufferColor = text : console.log("error")
+                onEditingFinished:  acceptableInput ? windPlanner.innerFlyBuffer.settings.color = text : console.log("error")
             }
 
             QGCTextField {
-                anchors.top: innerColorField.bottom
                 id:                 outerColorField
-                placeholderText:    qsTr("Outer color: " + windPlanner.outerBufferColor)
+                anchors.top:        innerColorField.bottom
 
-                onEditingFinished:  acceptableInput ? windPlanner.outerBufferColor = text : console.log("error")
+                placeholderText:    qsTr("Outer color: " + windPlanner.outerFlyBuffer.settings.color)
+
+                onEditingFinished:  acceptableInput ? windPlanner.outerFlyBuffer.settings.color = text : console.log("error")
             }
 
+//            QGCCheckBox {
+//                id:         flightViewBufferEnableCheckbox
+//                text:       "Enable flight view circular buffer"
+//                anchors.top: outerColorField.bottom
+//                onClicked: {
+//                    enableFlightViewBuffer = !enableFlightViewBuffer
+//                    checked = enableFlightViewBuffer
+//                    windPlanner.flightViewBufferVisible = enableFlightViewBuffer
+//                }
+
+//                Component.onCompleted: {
+//                    checked = enableFlightViewBuffer
+//                }
+//            }
         }
     }
 

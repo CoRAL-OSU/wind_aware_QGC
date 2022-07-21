@@ -161,4 +161,36 @@ Item {
         show:                   !QGroundControl.videoManager.fullScreen &&
                                     (videoControl.pipState.state === videoControl.pipState.pipState || mapControl.pipState.state === mapControl.pipState.pipState)
     }
+
+    // WIND AWARE MODIFICATIONS
+
+    Instantiator {
+        model: globals.windAwareMissionPlanner.outerFlyBuffer.polygon
+
+        delegate: QGCMapPolygonVisuals {
+            parent: _root
+            mapControl: _mapControl
+            mapPolygon: object
+            borderWidth: 0
+            borderColor: "orange"
+            interiorColor: globals.windAwareMissionPlanner.outerFlyBuffer.settings.color
+            interiorOpacity: 0.2 *opacity
+            interactive: false
+        }
+    }
+
+    Instantiator {
+        model: globals.windAwareMissionPlanner.innerFlyBuffer.polygon
+
+        delegate: QGCMapPolygonVisuals {
+            parent: _root
+            mapControl: _mapControl
+            mapPolygon: object
+            borderWidth: 0
+            borderColor: "orange"
+            interiorColor: globals.windAwareMissionPlanner.innerFlyBuffer.settings.color
+            interiorOpacity: 0.2 *opacity
+            interactive: false
+        }
+    }
 }

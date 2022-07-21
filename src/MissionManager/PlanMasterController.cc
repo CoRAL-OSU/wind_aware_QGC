@@ -45,7 +45,7 @@ PlanMasterController::PlanMasterController(QObject* parent)
     , _missionController    (this)
     , _geoFenceController   (this)
     , _rallyPointController (this)
-    , _windAwarePlanner     (this, parent)
+    //, _windAwarePlanner     (this, parent)
 {
     _commonInit();
 }
@@ -59,7 +59,7 @@ PlanMasterController::PlanMasterController(MAV_AUTOPILOT firmwareType, MAV_TYPE 
     , _missionController    (this)
     , _geoFenceController   (this)
     , _rallyPointController (this)
-    , _windAwarePlanner     (this, parent)
+    //, _windAwarePlanner     (this, parent)
 {
     _commonInit();
 }

@@ -468,7 +468,8 @@ void QGCApplication::_initCommon()
     qmlRegisterUncreatableType<MissionController>       (kQGCControllers,                   1, 0, "MissionController",          kRefOnly);
     qmlRegisterUncreatableType<GeoFenceController>      (kQGCControllers,                   1, 0, "GeoFenceController",         kRefOnly);
     qmlRegisterUncreatableType<RallyPointController>    (kQGCControllers,                   1, 0, "RallyPointController",       kRefOnly);
-    qmlRegisterUncreatableType<WindAwareMissionPlanner> (kQGCControllers,                   1, 0, "WindAwareMissionPlanner",    kRefOnly);
+    qmlRegisterUncreatableType<WindBuffer>              (kQGroundControl,                   1, 0, "WindBuffer",                 kRefOnly);
+    qmlRegisterUncreatableType<BufferSettings>          (kQGroundControl,                   1, 0, "BufferSettings",             kRefOnly);
 
     qmlRegisterUncreatableType<MissionItem>         (kQGroundControl,                       1, 0, "MissionItem",                kRefOnly);
     qmlRegisterUncreatableType<VisualMissionItem>   (kQGroundControl,                       1, 0, "VisualMissionItem",          kRefOnly);
@@ -506,6 +507,8 @@ void QGCApplication::_initCommon()
     qmlRegisterType<ESP8266ComponentController>     (kQGCControllers,                       1, 0, "ESP8266ComponentController");
     qmlRegisterType<ScreenToolsController>          (kQGCControllers,                       1, 0, "ScreenToolsController");
     qmlRegisterType<PlanMasterController>           (kQGCControllers,                       1, 0, "PlanMasterController");
+    qmlRegisterType<WindAwareMissionPlanner>        (kQGCControllers,                       1, 0, "WindAwareMissionPlanner");
+
     qmlRegisterType<QGCFileDialogController>        (kQGCControllers,                       1, 0, "QGCFileDialogController");
     qmlRegisterType<RCChannelMonitorController>     (kQGCControllers,                       1, 0, "RCChannelMonitorController");
     qmlRegisterType<JoystickConfigController>       (kQGCControllers,                       1, 0, "JoystickConfigController");
