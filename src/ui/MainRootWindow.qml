@@ -406,6 +406,7 @@ ApplicationWindow {
             start()
             console.log("updating wamp");
             flyViewMasterController = globals.planMasterControllerFlyView
+            planViewMasterController = globals.planMasterControllerPlanView
         }
     }
 

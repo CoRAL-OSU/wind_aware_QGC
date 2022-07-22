@@ -480,13 +480,27 @@ WindAwareMissionPlanner::WindAwareMissionPlanner(QObject* parent)
 void WindAwareMissionPlanner::start(void)
 {
     qDebug() << "starting wamp.";
+}
 
-    // Update every set seconds for fly view
+void WindAwareMissionPlanner::flyViewMasterControllerChanged()
+{
+    // If empty, do nothing
+    if(!this->flyViewMasterController) return;
 
+    // Update fly view buffer at set interval
     updateTimer = new QTimer(this);
-    connect(updateTimer, &QTimer::timeout, this, &WindAwareMissionPlanner::UpdateBuffers);
+    connect(updateTimer, &QTimer::timeout, this, &WindAwareMissionPlanner::UpdateFlyBuffer);
     updateTimer->start(updateIntervalMilliseconds);
+}
 
+void WindAwareMissionPlanner::planViewMasterControllerChanged()
+{
+    // If empty, do nothing
+    if(!this->planViewMasterController) return;
+
+    // Update plan view buffer when mission items change
+    connect(planViewMasterController->missionController()->visualItems(), &QmlObjectListModel::dirtyChanged, this, &WindAwareMissionPlanner::UpdatePlanBuffer);
+    connect(planViewMasterController->missionController()->visualItems(), &QmlObjectListModel::countChanged, this, &WindAwareMissionPlanner::UpdatePlanBuffer);
 }
 
 void WindAwareMissionPlanner::setInnerBufferSettings(QString color, double radius, bool isVisible)
@@ -501,14 +515,8 @@ void WindAwareMissionPlanner::setOuterBufferSettings(QString color, double radiu
     this->outerPlanBuffer.GetSettings()->SetStyle(color, radius, isVisible);
 }
 
-//void WindAwareMissionPlanner::setInnerBufferColor(QString color)
-//{
-//    this->innerFlyBuffer.GetSettings().
-//}
-
-void WindAwareMissionPlanner::UpdateBuffers()
+void WindAwareMissionPlanner::UpdateFlyBuffer()
 {
-
     // 1. Ensure we have a reference to the controller
     if(!flyViewMasterController) {
         qDebug() << "Fly view master controller empty";
@@ -516,14 +524,12 @@ void WindAwareMissionPlanner::UpdateBuffers()
     }
 
     // 2. Ensure controller has a vehicle connected
-    if(!qgcApp()->toolbox()->multiVehicleManager()->activeVehicle()) {
-        qDebug() << "No active vehicle";
-        return;
-    }
+    if(!qgcApp()->toolbox()->multiVehicleManager()->activeVehicle()) return;
 
     // Get vehicle coordinates to center circular buffer
     QGeoCoordinate vehicleCoords = flyViewMasterController->managerVehicle()->coordinate();
 
+    // --- FLY BUFFER
     QGCFencePolygon* circularFence = BufferGenerator::GenerateCircularBuffer(vehicleCoords,
                                                                              outerFlyBuffer.GetSettings()->GetRadius(),
                                                                              outerFlyBuffer.GetSettings()->GetPointsInRadius(),
@@ -536,6 +542,57 @@ void WindAwareMissionPlanner::UpdateBuffers()
                                                             flyViewMasterController);
 
     innerFlyBuffer.SetPolygon(circularFence);
+}
+
+void WindAwareMissionPlanner::UpdatePlanBuffer()
+{
+    // 1. Ensure we have reference to controller
+    if(!planViewMasterController) {
+        qDebug() << "Plan view master controller empety";
+        return;
+    }
+
+    // 2. Gather mission items; ensure enough items are present
+    QmlObjectListModel* currentMissionItems = planViewMasterController->missionController()->visualItems();
+    if(currentMissionItems->count() <= 2) {
+        qDebug() << "Not enough mission items";
+        return;
+    }
+
+    // 3. Convert mission items to usable type
+    QList<QGeoCoordinate> trajCoordList;
+    for(int i = 1; i < currentMissionItems->count(); i++) {
+        VisualMissionItem* newItem = qobject_cast<VisualMissionItem*>(currentMissionItems->get(i));
+        trajCoordList.push_back(newItem->coordinate());
+    }
+
+    // 4. Convert trajectory from lat/lon to LTP
+    QList<WindAwareMissionPlanner::point> trajPointList = BufferGenerator::ConvertGeoPointToLTP(trajCoordList, trajCoordList.at(0));
+
+    // 5. Generate buffer polygons
+    WindAwareMissionPlanner::polygon innerBufferPoly = BufferGenerator::GeneratePolygon(trajPointList,
+                                                                                        this->innerPlanBuffer.GetSettings()->GetRadius(),
+                                                                                        this->innerPlanBuffer.GetSettings()->GetPointsInRadius());
+    WindAwareMissionPlanner::polygon outerBufferPoly = BufferGenerator::GeneratePolygon(trajPointList,
+                                                                                        this->outerPlanBuffer.GetSettings()->GetRadius(),
+                                                                                        this->outerPlanBuffer.GetSettings()->GetPointsInRadius());
+
+    // 6. Convert polygon to list of lat/lon coordinates
+    QList<QGeoCoordinate> innerBufferCoordList = BufferGenerator::ConvertLTPToGeoPoint(BufferGenerator::ConvertPolygonToPointList(innerBufferPoly),
+                                                                                       trajCoordList.at(0));
+    QList<QGeoCoordinate> outerBufferCoordList = BufferGenerator::ConvertLTPToGeoPoint(BufferGenerator::ConvertPolygonToPointList(outerBufferPoly),
+                                                                                       trajCoordList.at(0));
+    // 7. Build fence polygons using point list
+    QGCFencePolygon* innerBufferFencePoly = new QGCFencePolygon(true, planViewMasterController->geoFenceController());
+    QGCFencePolygon* outerBufferFencePoly = new QGCFencePolygon(true, planViewMasterController->geoFenceController());
+
+    BufferGenerator::BuildGeoFence(innerBufferCoordList, innerBufferFencePoly);
+    BufferGenerator::BuildGeoFence(outerBufferCoordList, outerBufferFencePoly);
+
+    // 8. Add new fence polygons to WindBuffer objects for display on PlanView
+    innerPlanBuffer.SetPolygon(innerBufferFencePoly);
+    outerPlanBuffer.SetPolygon(outerBufferFencePoly);
+
 }
 
 

@@ -67,7 +67,15 @@ AnalyzePage {
                     notation:       DoubleValidator.StandardNotation
                 }
 
-                onEditingFinished: acceptableInput ? windPlanner.innerFlyBuffer.settings.radius = parseFloat(text) : console.log("error")
+                onEditingFinished: {
+                    if(acceptableInput) {
+                        windPlanner.innerFlyBuffer.settings.radius = parseFloat(text)
+                        windPlanner.innerPlanBuffer.settings.radius = parseFloat(text)
+                    }
+                    else {
+                        console.log("Error setting risk configuration")
+                    }
+                }
             }
 
             QGCTextField {
@@ -81,7 +89,15 @@ AnalyzePage {
                     notation:       DoubleValidator.StandardNotation
                 }
 
-                onEditingFinished: acceptableInput ? windPlanner.outerFlyBuffer.settings.radius = parseFloat(text) : console.log("error")
+                onEditingFinished: {
+                    if(acceptableInput) {
+                        windPlanner.outerFlyBuffer.settings.radius = parseFloat(text)
+                        windPlanner.outerPlanBuffer.settings.radius = parseFloat(text)
+                    }
+                    else {
+                        console.log("Error setting risk configuration")
+                    }
+                }
             }
 
             QGCLabel{
@@ -95,7 +111,15 @@ AnalyzePage {
                 anchors.top:        color_label.bottom
                 placeholderText:    qsTr("Inner color: " + windPlanner.innerFlyBuffer.settings.color)
 
-                onEditingFinished:  acceptableInput ? windPlanner.innerFlyBuffer.settings.color = text : console.log("error")
+                onEditingFinished:  {
+                    if(acceptableInput) {
+                        windPlanner.innerFlyBuffer.settings.color = text
+                        windPlanner.innerPlanBuffer.settings.color = text
+                    }
+                    else {
+                        console.log("Error setting risk configuration")
+                    }
+                }
             }
 
             QGCTextField {
@@ -104,7 +128,15 @@ AnalyzePage {
 
                 placeholderText:    qsTr("Outer color: " + windPlanner.outerFlyBuffer.settings.color)
 
-                onEditingFinished:  acceptableInput ? windPlanner.outerFlyBuffer.settings.color = text : console.log("error")
+                onEditingFinished: {
+                    if(acceptableInput) {
+                        windPlanner.outerFlyBuffer.settings.color = text
+                        windPlanner.outerPlanBuffer.settings.color = text
+                    }
+                    else {
+                        console.log("Error setting risk configuration")
+                    }
+                }
             }
 
 //            QGCCheckBox {

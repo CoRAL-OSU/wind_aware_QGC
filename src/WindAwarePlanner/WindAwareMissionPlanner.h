@@ -94,6 +94,7 @@ public:
     // Accessed by Risk Margin page to configure appearance
     Q_INVOKABLE void setInnerBufferSettings(QString color, double radius, bool isVisible = true);
     Q_INVOKABLE void setOuterBufferSettings(QString color, double radius, bool isVisible = true);
+
 //    Q_INVOKABLE void setInnerBufferColor(QString color);
 //    Q_INVOKABLE void setInnerBufferRadius(double radius);
 //    Q_INVOKABLE void setInnerBufferVisible(bool visible);
@@ -106,7 +107,8 @@ public:
     Q_PROPERTY(WindBuffer* innerFlyBuffer READ getInnerFlyBuffer CONSTANT)
     Q_PROPERTY(WindBuffer* outerPlanBuffer READ getOuterPlanBuffer CONSTANT)
     Q_PROPERTY(WindBuffer* innerPlanBuffer READ getInnerPlanBuffer CONSTANT)
-    Q_PROPERTY(PlanMasterController* flyViewMasterController MEMBER flyViewMasterController)
+    Q_PROPERTY(PlanMasterController* flyViewMasterController MEMBER flyViewMasterController NOTIFY flyViewMasterControllerChanged)
+    Q_PROPERTY(PlanMasterController* planViewMasterController MEMBER planViewMasterController NOTIFY planViewMasterControllerChanged)
 
 
     WindBuffer* getOuterFlyBuffer() { return &outerFlyBuffer; }
@@ -122,7 +124,10 @@ public:
 
 public slots:
 
-    void UpdateBuffers(void);
+    void UpdateFlyBuffer(void);
+    void UpdatePlanBuffer(void);
+    void flyViewMasterControllerChanged(void);
+    void planViewMasterControllerChanged(void);
 
 
 private:
@@ -155,6 +160,9 @@ public:
                                                    double circleRadius,
                                                    int numPoints,
                                                    PlanMasterController* masterController);
+    // More general polygon generation
+    static WindAwareMissionPlanner::polygon GeneratePolygon(QList<WindAwareMissionPlanner::point> pointList_cartesian, double radius, int pointsInRadius);
+
 
     // Converts geographic coord (lat/lon) into local-tangent-plane coordinate (x/y/z)
     static WindAwareMissionPlanner::point ConvertGeoPointToLTP(QGeoCoordinate point, QGeoCoordinate ltpOrigin);
@@ -164,12 +172,17 @@ public:
     static QGeoCoordinate ConvertLTPToGeoPoint(WindAwareMissionPlanner::point point, QGeoCoordinate ltpOrigin);
     static QList<QGeoCoordinate> ConvertLTPToGeoPoint(QList<WindAwareMissionPlanner::point> points, QGeoCoordinate ltpOrigin);
 
-private:
-
-    // Generates polygon around list of points
-    static WindAwareMissionPlanner::polygon GeneratePolygon(QList<WindAwareMissionPlanner::point> pointList_cartesian, double radius, int pointsInRadius);
     static void BuildGeoFence(QList<QGeoCoordinate> coordList, QGCFencePolygon* geoFencePolygon);
     static QList<WindAwareMissionPlanner::point> ConvertPolygonToPointList(WindAwareMissionPlanner::polygon poly);
+};
+
+// ====================================
+// TRAJECTORY GENERATOR DEF
+// ====================================
+
+class TrajectoryGenerator {
+public:
+private:
 };
 
 

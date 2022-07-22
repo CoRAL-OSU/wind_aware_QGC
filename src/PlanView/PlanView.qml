@@ -453,7 +453,7 @@ Item {
 
             // Add inner buffer polygons
             Instantiator {
-                model: _planMasterController.windAwarePlanner.innerWindBufferPolygon
+                model: globals.windAwareMissionPlanner.innerPlanBuffer.polygon
 
                 delegate: QGCMapPolygonWithHolesVisuals {
                     parent:                 _root
@@ -461,7 +461,7 @@ Item {
                     map_polygon:            object
                     border_width:           0
                     border_color:           "orange"
-                    interior_color:         _planMasterController.windAwarePlanner.innerBufferColor
+                    interior_color:         globals.windAwareMissionPlanner.innerPlanBuffer.settings.color
                     interior_opacity:       0.2 * opacity
                     interactive:            false
                 }
@@ -469,7 +469,7 @@ Item {
 
             // Add outer buffer polygons
             Instantiator {
-                model: _planMasterController.windAwarePlanner.outerWindBufferPolygon
+                model: globals.windAwareMissionPlanner.outerPlanBuffer.polygon
 
                 delegate: QGCMapPolygonWithHolesVisuals {
                     parent:                 _root
@@ -477,7 +477,7 @@ Item {
                     map_polygon:            object
                     border_width:           0
                     border_color:           "red"
-                    interior_color:         _planMasterController.windAwarePlanner.outerBufferColor
+                    interior_color:         globals.windAwareMissionPlanner.outerPlanBuffer.settings.color
                     interior_opacity:       0.2 * opacity
                     interactive:            false
                 }
@@ -829,6 +829,16 @@ Item {
                         visible:            true
                         dropPanelComponent: centerMapDropPanel
                     }
+//                    ToolStripAction {
+//                        text:               qsTr("Plan Wind-Aware Path")
+//                        iconSource:         "/qmlimages/WindRiskMarginIcon.svg"
+//                        enabled:            true
+//                        visible:            true
+//                        onTriggered: {
+
+//                        }
+//                    }
+
                 ]
             }
 
