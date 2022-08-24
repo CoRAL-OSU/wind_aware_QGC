@@ -16,6 +16,7 @@ QGCArtificialHorizon        1.0 QGCArtificialHorizon.qml
 QGCAttitudeHUD              1.0 QGCAttitudeHUD.qml
 QGCAttitudeWidget           1.0 QGCAttitudeWidget.qml
 QGCWindDial                 1.0 QGCWindDial.qml
+QGCWindDial_Outer           1.0 QGCWindDial_Outer.qml
 QGCWindWidget               1.0 QGCWindWidget.qml
 QGCPlanarComponentWindDisplay 1.0 QGCPlanarComponentWindDisplay.qml
 QGCVerticalWindDisplay      1.0 QGCVerticalWindDisplay.qml

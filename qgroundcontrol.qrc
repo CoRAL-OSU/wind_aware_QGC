@@ -288,6 +288,7 @@
         <file alias="QGroundControl/Controls/QGCMapPolygonWithHolesVisuals.qml">src/MissionManager/QGCMapPolygonWithHolesVisuals.qml</file>
         <file alias="QGroundControl/FlightMap/QGCPlanarComponentWindDisplay.qml">src/FlightMap/Widgets/QGCPlanarComponentWindDisplay.qml</file>
         <file alias="QGroundControl/FlightMap/QGCVerticalWindIndicator.qml">src/FlightMap/Widgets/QGCVerticalWindIndicator.qml</file>
+        <file alias="QGroundControl/FlightMap/QGCWindDial_Outer.qml">src/FlightMap/Widgets/QGCWindDial_Outer.qml</file>
     </qresource>
     <qresource prefix="/FirstRunPromptDialogs">
         <file alias="UnitsFirstRunPrompt.qml">src/FirstRunPromptDialogs/UnitsFirstRunPrompt.qml</file>

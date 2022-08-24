@@ -77,11 +77,11 @@ Item {
                 }
             }
 
-            QGCWindDial {
+            QGCWindDial_Outer {
                 id:             planarHeadingArrow
                 anchors.fill:   planarHeadingDial
-                arrowLength:    (_windSpeedPlanar >= 0.5) ? planarHeadingDial.width / 3 : 0
-                arrowAngle:     _windHeadingRad
+                arrowLength:    15 //(_windSpeedPlanar >= 0.5) ? planarHeadingDial.width / 3 : 0
+                arrowAngle:     (_windHeadingRad + Math.PI) % (2*Math.PI)
                 arrowLineWidth: 5
             }
 
