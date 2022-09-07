@@ -18,13 +18,13 @@ import QGroundControl.Vehicle      1.0
 Item {
     id: root
     property var  vehicle:              null
-    property real _windSpeed:           6.0 //vehicle ? vehicle.wind.speed.rawValue : 0
-    property real _windHeading:         160 //vehicle ? vehicle.wind.direction.rawValue: 0
+    property real _windSpeed:           vehicle ? vehicle.wind.speed.rawValue : 0
+    property real _windHeading:         vehicle ? vehicle.wind.direction.rawValue: 0
     property real _windHeadingRad:      (Math.PI / 180.0) * _windHeading
-    property real _windSpeedDown:       2.0 //vehicle ? vehicle.wind.verticalSpeed.rawValue: 0
-    property real _windSpeedNorth:      _windSpeed * Math.cos(_windHeadingRad) //vehicle ? _windSpeed * Math.cos(_windHeadingRad) : 0
-    property real _windSpeedEast:       _windSpeed * Math.sin(_windHeadingRad) //vehicle ? _windSpeed * Math.sin(_windHeadingRad) : 0
-    property real _windSpeedPlanar:     Math.sqrt(Math.pow(_windSpeedNorth, 2) + Math.pow(_windSpeedEast,2)) //vehicle ? Math.sqrt(Math.pow(_windSpeedNorth, 2) + Math.pow(_windSpeedEast,2)) : 0 // Planar refers to NE wind, with no D component
+    property real _windSpeedDown:       vehicle ? vehicle.wind.verticalSpeed.rawValue: 0
+    property real _windSpeedNorth:      vehicle ? _windSpeed * Math.cos(_windHeadingRad) : 0
+    property real _windSpeedEast:       vehicle ? _windSpeed * Math.sin(_windHeadingRad) : 0
+    property real _windSpeedPlanar:     vehicle ? Math.sqrt(Math.pow(_windSpeedNorth, 2) + Math.pow(_windSpeedEast,2)) : 0 // Planar refers to NE wind, with no D component
     property real _verticalMaxSpeed:    5.0
     property real _planarMaxSpeed:      15.0
     property color  _windPointerColor:  Qt.rgba(1, 0, 0, 1)
