@@ -26,6 +26,13 @@ Item {
     property real   outlineOffset:    0
     property color  outlineColor:     arrowColor
 
+    enum ArrowStyle {
+        Inner,
+        Outer
+    }
+
+    property int   style:            QGCWindDial.ArrowStyle.Inner
+
     function drawArrow(length, angle) {
         arrowLength = length;
         arrowAngle = angle;
@@ -40,7 +47,7 @@ Item {
         id:             arrowCanvas
         anchors.fill:   parent
 
-        function _drawArrow(context, length, angle) {
+        function _drawArrow_Inner(context, length, angle) {
             // Setup style
             context.lineWidth = arrowLineWidth;
             context.strokeStyle = arrowColor;
@@ -106,10 +113,56 @@ Item {
 
         }
 
+        function _drawArrow_Outer(context, length, angle) {
+            // Setup style
+            context.lineWidth = arrowLineWidth;
+            context.strokeStyle = arrowColor;
+            context.lineCap = "square";
+            context.fillStyle = arrowColor
+            context.beginPath();
+
+            // Draw arrow only if nonzero length. Otherwise, draw center dot
+            if(length >= 0.5) {
+
+                // Setup rotation around center
+                context.translate(width/2, height/2);
+                context.rotate(angle);
+                context.translate(-width/2, -height/2);
+
+                // Draw outer triangle
+                context.strokeStyle = arrowColor
+                context.fillStyle = arrowColor
+                context.lineWidth = arrowLineWidth
+
+
+                context.moveTo(width/2, length); // start at tip of arrow
+                var arrowHalfWidth = length * Math.tan(15 * Math.PI / 180);
+                context.lineTo(width/2 + arrowHalfWidth, 0);
+                context.lineTo(width/2 - arrowHalfWidth, 0);
+                context.lineTo(width/2, length);
+                context.stroke();
+
+                context.fill();
+
+            }
+
+            else {
+                context.arc(width/2, height/2, baseCircleWidth, 0, 2*Math.PI);
+                context.fill();
+            }
+            // Clean up and exit
+            context.closePath();
+            context.setTransform(1, 0, 0, 1, 0, 0);
+            context.drawImage(maskCanvas, 0, 0)
+
+        }
+
         onPaint: {
             var ctx = getContext("2d");
             ctx.clearRect(0, 0, width, height);
-            _drawArrow(ctx, arrowLength, arrowAngle);
+
+            if(style === QGCWindDial.ArrowStyle.Inner) _drawArrow_Inner(ctx, arrowLength, arrowAngle);
+            else if(style === QGCWindDial.ArrowStyle.Outer) _drawArrow_Outer(ctx, arrowLength, arrowAngle);
         }
     }
 

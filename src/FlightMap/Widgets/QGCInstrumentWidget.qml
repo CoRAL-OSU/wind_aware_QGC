@@ -64,11 +64,11 @@ ColumnLayout {
         Layout.fillWidth:   true
         color:              qgcPal.window
         //border.color:       qgcPal.text
-        radius:             windWidget._radius / 4
+        radius:             windWidget_Inner._radius / 4
 
         DeadMouseArea { anchors.fill: parent }
 
-        property Item selectedDisplayType: windWidget
+        property Item selectedDisplayType: windWidget_Inner
 
         QGCLabel {
             id:                     windDisplayLabel
@@ -96,7 +96,8 @@ ColumnLayout {
             Component.onCompleted: currentIndex = indexOfValue(parent.selectedDisplayType)
 
             model: [
-                {value: windWidget, text: qsTr("Gradient") },
+                {value: windWidget_Inner, text: qsTr("Inner Gradient") },
+                {value: windWidget_Outer, text: qsTr("Outer Gradient") },
                 {value: compass_2d, text: qsTr("2D Compass") },
                 {value: compass_components, text: qsTr("Compass Components") }
             ]
@@ -123,10 +124,19 @@ ColumnLayout {
             }
 
             QGCWindWidget {
-                id:                     windWidget
+                id:                     windWidget_Inner
                 vehicle:                globals.activeVehicle
                 anchors.fill:           parent
                 visible:                windInstrument.selectedDisplayType === this
+                dialArrowStyle:         QGCWindDial.ArrowStyle.Inner
+            }
+
+            QGCWindWidget {
+                id:                     windWidget_Outer
+                vehicle:                globals.activeVehicle
+                anchors.fill:           parent
+                visible:                windInstrument.selectedDisplayType === this
+                dialArrowStyle:         QGCWindDial.ArrowStyle.Outer
             }
 
             Rectangle {
